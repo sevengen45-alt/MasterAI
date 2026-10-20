@@ -25,7 +25,7 @@ except Exception:
     st.stop()
 
 st.title("MasterAI 🤖")
-st.caption("MasterAI versi Hidup - Tanya apa aja!")
+st.caption("Tanya apa aja!⚡")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
