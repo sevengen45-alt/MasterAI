@@ -43,7 +43,7 @@ if prompt := st.chat_input("Tanya sesuatu..."):
         with st.spinner("Lagi mikir..."):
             completion = client.chat.completions.create(
                 messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.messages],
-               model="llama-3.1-8b-instant",
+              model="openai/gpt-oss-20b",
             )
             response = completion.choices[0].message.content
             placeholder = st.empty()
