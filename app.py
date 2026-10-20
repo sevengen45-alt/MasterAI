@@ -1,132 +1,161 @@
 import streamlit as st
-import wikipedia
-from duckduckgo_search import DDGS
+from groq import Groq
+import uuid
+import time
 
-st.set_page_config(page_title="MASTER AI - Hidup & Riset", page_icon="✨", layout="wide")
+st.set_page_config(page_title="MasterAI v9.3", page_icon="🧠", layout="wide")
 
+# ===== CSS FIX WARNA PUTIH + JUMBO TITLE =====
 st.markdown("""
 <style>
-    .stApp {
-        background: #0A0A0F;
-        background-image: 
-            radial-gradient(at 0% 0%, rgba(120, 119, 198, 0.3) 0px, transparent 50%),
-            radial-gradient(at 50% 0%, rgba(255, 119, 198, 0.2) 0px, transparent 50%),
-            radial-gradient(at 100% 0%, rgba(120, 219, 255, 0.2) 0px, transparent 50%);
-    }
-    .main-title {
-        font-size: 3rem; font-weight: 800; text-align: center;
-        background: linear-gradient(100deg, #A5B4FC, #F0ABFC, #93C5FD, #6EE7B7);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        background-size: 200% 200%; animation: move 6s ease infinite;
-        margin-top: 40px;
-    }
-    @keyframes move { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-    [data-testid="stChatMessage"] {
-        background: rgba(255,255,255,0.04) !important;
-        border-radius: 20px !important; backdrop-filter: blur(12px);
-    }
-    section[data-testid="stSidebar"] { background: #111119 !important; }
-    .research-badge {
-        display: inline-block; background: linear-gradient(90deg, #00F5FF, #7F00FF);
-        color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700;
-    }
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&display=swap');
+* {font-family: 'Space Grotesk', sans-serif !important;}
+
+.stApp {
+    background: radial-gradient(ellipse at top, #0f0f23 0%, #09090b 50%, #000000 100%);
+    background-attachment: fixed;
+}
+
+/* JUMBO TITLE */
+h1 {
+    background: linear-gradient(90deg, #00F5FF, #7B61FF, #FF00E5, #FF8A00) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    text-align: center !important;
+    font-weight: 900 !important;
+    font-size: 5.5rem !important;
+    line-height: 1.0 !important;
+    margin-top: 3rem !important;
+    margin-bottom: 2rem !important;
+    filter: drop-shadow(0 0 30px rgba(123,97,255,0.8)) !important;
+}
+
+@media (max-width: 600px) {
+    h1 {font-size: 3.5rem !important;}
+}
+
+/* ===== FIX UTAMA - WARNA TEKS JAWABAN JADI PUTIH TERANG ===== */
+.stChatMessage p,
+.stChatMessage li,
+.stChatMessage span,
+.stChatMessage div,
+.stMarkdown p,
+.stMarkdown li {
+    color: #FFFFFF !important;
+    opacity: 1 !important;
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+}
+
+/* Judul di dalam jawaban */
+.stChatMessage h1, .stChatMessage h2, .stChatMessage h3 {
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    background: none !important;
+}
+
+.stChatMessage h2 {
+    color: #00F5FF !important;
+    -webkit-text-fill-color: #00F5FF !important;
+}
+
+.stChatMessage strong, .stChatMessage b {
+    color: #FFFFFF !important;
+    font-weight: 800 !important;
+}
+
+/* Tabel biar keliatan */
+.stChatMessage table {
+    color: white !important;
+}
+.stChatMessage th {
+    background: rgba(123,97,255,0.3) !important;
+    color: white !important;
+}
+.stChatMessage td {
+    color: #E0E0E0 !important;
+    border-color: rgba(255,255,255,0.2) !important;
+}
+
+/* Chat bubble */
+.stChatMessage {
+    background: rgba(255,255,255,0.08) !important;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(123,97,255,0.25) !important;
+    border-radius: 20px !important;
+}
+
+.badge {
+    background: linear-gradient(90deg, #00F5FF, #7B61FF);
+    padding: 4px 10px; border-radius: 20px; color: white;
+    font-size: 10px; font-weight: 600; display: inline-block; margin: 2px;
+}
 </style>
 """, unsafe_allow_html=True)
 
-if "all_chats" not in st.session_state:
-    st.session_state.all_chats = {"Obrolan Baru": []}
-if "current_chat" not in st.session_state:
-    st.session_state.current_chat = "Obrolan Baru"
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
-def realtime_research(query):
-    try:
-        wikipedia.set_lang("id")
-        try:
-            summary = wikipedia.summary(query, sentences=3)
-            return summary, f"Wikipedia: {query}"
-        except: pass
-        with DDGS() as ddgs:
-            results = list(ddgs.text(query, max_results=3))
-            if results:
-                combined = "\n".join([r['body'] for r in results[:2]])
-                return combined[:600] + "...", "DuckDuckGo Search"
-    except: return None, None
-    return None, None
+if "user_memory" not in st.session_state:
+    st.session_state.user_memory = {"nama": None, "topik": []}
+if "chats" not in st.session_state:
+    fid = str(uuid.uuid4())
+    st.session_state.chats = {fid: {"title": "Siap Memulai Obrolan!", "messages": [], "created": time.time()}}
+    st.session_state.active_chat = fid
 
-def is_important_question(prompt):
-    keywords = ["apa itu","siapa","sejarah","matematika","mtk","ipa","rumus","penemu","jelaskan"]
-    return any(k in prompt.lower() for k in keywords)
-
-def get_smart_answer(prompt, nama):
-    sapaan = f"bang {nama}" if nama else "bang"
-    research_data, source = None, None
-    if is_important_question(prompt):
-        research_data, source = realtime_research(prompt)
-
-    if "informatika" in prompt.lower():
-        base = f"""Oke {sapaan}, gue jawab dengan santai ya!
-
-**Informatika itu ilmu tentang komputer & informasi.**
-1. **Ngoding** - Bikin app kayak gini
-2. **Data & AI** - Bikin komputer bisa mikir
-3. **Jaringan** - Gimana internet nyambung
-4. **Keamanan** - Jagain data
-
-Lu udah praktekin langsung!
-"""
-        if research_data: base += f"\n\n**📚 Riset ({source}):**\n{research_data}"
-        return base, bool(research_data)
-
-    if research_data:
-        return f"""Oke {sapaan}, gue jawab dengan santai ya, udah gue riset real-time!
-
-**{prompt}:**
-
-{research_data}
-
-*Sumber: {source}*""", True
-
-    return f"""Yo {sapaan}, soal **'{prompt}'** paham gue. Kuncinya ada di logikanya. Mau gue breakdown pake analogi atau langsung contoh code? (Kalo Sejarah/MTK/IPA otomatis gue research!)""", False
+def get_active():
+    return st.session_state.chats[st.session_state.active_chat]
 
 with st.sidebar:
-    st.markdown("## ✨ MASTER AI v10.0")
-    if st.button("➕ Obrolan Baru", use_container_width=True):
-        new_title = f"Obrolan {len(st.session_state.all_chats)+1}"
-        st.session_state.all_chats[new_title] = []
-        st.session_state.current_chat = new_title
-        st.session_state.messages = []
+    st.markdown("### 🧠 MASTER AI v9.3")
+    st.markdown('<span class="badge">PUTIH TERANG</span> <span class="badge">ANTI GELAP</span>', unsafe_allow_html=True)
+    st.divider()
+    if st.session_state.user_memory["nama"]:
+        st.success(f"👋 Yo {st.session_state.user_memory['nama']}!")
+    else:
+        nama_input = st.text_input("Nama lu siapa bang?", placeholder="Bintang")
+        if nama_input:
+            st.session_state.user_memory["nama"] = nama_input
+            st.rerun()
+    st.markdown("### 💬 Obrolan")
+    if st.button("➕ Obrolan Baru", use_container_width=True, type="primary"):
+        nid = str(uuid.uuid4())
+        st.session_state.chats[nid] = {"title": f"Chat {len(st.session_state.chats)+1} ✨", "messages": [], "created": time.time()}
+        st.session_state.active_chat = nid
         st.rerun()
     st.divider()
-    st.markdown("**🕓 Riwayat Obrolan**")
-    for title in list(st.session_state.all_chats.keys())[::-1]:
-        if st.button(f"💬 {title}", key=title, use_container_width=True):
-            st.session_state.current_chat = title
-            st.session_state.messages = st.session_state.all_chats[title]
+    for cid, chat in sorted(st.session_state.chats.items(), key=lambda x: x[1]["created"], reverse=True):
+        if st.button(f"{chat['title']}", key=f"chat_{cid}", use_container_width=True):
+            st.session_state.active_chat = cid
             st.rerun()
-    nama = st.text_input("Nama lu?", placeholder="Juan")
 
-st.markdown('<div class="main-title">Siap Memulai Obrolan!</div>', unsafe_allow_html=True)
+active = get_active()
+st.title(active["title"])
 
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
-        if msg.get("is_research"):
-            st.markdown('<span class="research-badge">🔍 REAL-TIME RESEARCH</span>', unsafe_allow_html=True)
-        st.markdown(msg["content"])
+for m in active["messages"]:
+    with st.chat_message(m["role"], avatar="🧑‍💻" if m["role"]=="user" else "👨🏼‍💻"):
+        st.markdown(m["content"])
 
-if prompt := st.chat_input("Tanya apa saja..."):
-    st.session_state.messages.append({"role":"user","content":prompt})
-    st.session_state.all_chats[st.session_state.current_chat] = st.session_state.messages
-    with st.chat_message("user"): st.markdown(prompt)
-    with st.chat_message("assistant"):
-        jawaban, is_research = get_smart_answer(prompt, nama)
-        if is_research: st.markdown('<span class="research-badge">🔍 REAL-TIME RESEARCH</span>', unsafe_allow_html=True)
-        st.markdown(jawaban)
-    st.session_state.messages.append({"role":"assistant","content":jawaban, "is_research": is_research})
-    st.session_state.all_chats[st.session_state.current_chat] = st.session_state.messages
-    if "Obrolan" in st.session_state.current_chat:
-        new_name = prompt[:25]
-        st.session_state.all_chats[new_name] = st.session_state.all_chats.pop(st.session_state.current_chat)
-        st.session_state.current_chat = new_name
-        st.rerun()
+if prompt := st.chat_input(f"Tanya apa {st.session_state.user_memory['nama'] or 'saja!'}"):
+    if len(active["messages"]) == 0:
+        active["title"] = prompt[:35]
+    active["messages"].append({"role": "user", "content": prompt})
+    with st.chat_message("user", avatar="🧑‍💻"):
+        st.markdown(prompt)
+    with st.chat_message("assistant", avatar="👨🏼‍💻"):
+        ph = st.empty()
+        ph.markdown("▌ _lagi mikir..._ 🧠")
+        try:
+            nama = st.session_state.user_memory["nama"] or "bang"
+            system_prompt = f"Kamu MasterAI v9.3. Nama user {nama}. WAJIB Bahasa Indonesia gaul Jaksel, santai, kocak. Jawab jelas."
+            messages = [{"role": "system", "content": system_prompt}] + active["messages"]
+            res = client.chat.completions.create(model="openai/gpt-oss-120b", messages=messages, temperature=0.85, max_tokens=1200)
+            ans = res.choices[0].message.content
+            full = ""
+            for w in ans.split(" "):
+                full += w + " "
+                ph.markdown(full + "▌")
+                time.sleep(0.02)
+            ph.markdown(full)
+            active["messages"].append({"role": "assistant", "content": full})
+        except Exception as e:
+            ph.error(f"Error: {e}")
