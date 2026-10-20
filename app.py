@@ -6,7 +6,7 @@ str.title("MasterAI")
 str.write("Silahkan tanya apa saja pada AI ini")
 
 # 2. Masukkan API Key Groq kamu di bawah ini
-GROQ_API_KEY = "MASUKKAN_KUNCI_GROQ_GSK_KAMU"
+GROQ_API_KEY = "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"
 client = Groq(api_key=GROQ_API_KEY)
 
 # 3. Wadah Input User
