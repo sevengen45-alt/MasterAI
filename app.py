@@ -19,7 +19,7 @@ if str.button("Tanya"):
             try:
                 # Panggil mesin Groq super cepat
                 response = client.chat.completions.create(
-                    model="llama-3.1-70b-versatile",
+                   model="openai/gpt-oss-20b",
                     messages=[{"role": "user", "content": user_input}]
                 )
                 jawaban = response.choices.message.content
