@@ -10,7 +10,7 @@ if st.button("Tanya"):
     if pertanyaan:
         try:
             # Ambil API Key dari Secrets Streamlit (bukan dari file .env lagi pas deploy)
-            client = Groq(api_key=st.secrets["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"])
+            client = Groq(api_key=st.secrets["GROQ_API_KEY"])
             
             response = client.chat.completions.create(
                 model="openai/gpt-oss-20b",
