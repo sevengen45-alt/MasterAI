@@ -1,4 +1,2 @@
 streamlit
-duckduckgo-search
-wikipedia
-requests
+groq
