@@ -34,19 +34,19 @@ if "chats" not in st.session_state:
     st.session_state.chats = {
         first_id: {
             "title": "Obrolan Baru ✨", 
-            "messages": [{"role": "assistant", "content": "Yo bang! Selamat datang yaa! 🗿🔥\n\nCoba:\n- `panggil aku Bagas`\n- `/gambar kucing hacker`\n- `/pdf buatkan laporan`"}],
+            "messages": [{"role": "assistant", "content": "Yo bang! MasterAI v6.2 GPT-120B udah hidup! Paling pinter nih 🗿🔥\n\nCoba:\n- `panggil aku Bagas`\n- `/gambar kucing hacker`\n- `/pdf buatkan laporan`"}],
             "created": datetime.now().strftime("%d %b")
         }
     }
     st.session_state.active_chat = first_id
 
 with st.sidebar:
-    st.markdown("## 👨🏼‍💻 MasterAI v6.1")
+    st.markdown("## 👨🏼‍💻 MasterAI v6.2 GPT")
     if st.session_state.user_memory["nama"]:
         st.success(f"👋 Halo, {st.session_state.user_memory['nama']}!")
     else:
         st.info("💭 Bilang 'panggil aku ...' dong!")
-    st.markdown('<span class="badge">📱 ARM</span> <span class="badge">💻 x86</span> <span class="badge">🚫 No WM</span>', unsafe_allow_html=True)
+    st.markdown('<span class="badge">📱 ARM</span> <span class="badge">💻 x86</span> <span class="badge">🧠 GPT-120B</span> <span class="badge">🚫 No WM</span>', unsafe_allow_html=True)
     
     if st.button("➕ Obrolan Baru", use_container_width=True, type="primary"):
         nid = str(uuid.uuid4())
@@ -79,7 +79,7 @@ with st.sidebar:
 
 active = st.session_state.chats[st.session_state.active_chat]
 st.title(active["title"])
-st.caption(f"User: {st.session_state.user_memory['nama'] or 'Unknown'} • Glowing Active ✨")
+st.caption(f"User: {st.session_state.user_memory['nama'] or 'Unknown'} • Model: GPT-120B • Glowing Active ✨")
 
 for m in active["messages"]:
     with st.chat_message(m["role"], avatar="🧑‍💻" if m["role"]=="user" else "👨🏼‍💻"):
@@ -118,12 +118,12 @@ if prompt := st.chat_input("Ketik... /gambar, /pdf, atau curhat 🗿"):
             buffer = io.BytesIO()
             c = canvas.Canvas(buffer, pagesize=letter)
             c.setFont("Helvetica-Bold", 16)
-            c.drawString(80, 750, "MasterAI v6.1 - Document")
+            c.drawString(80, 750, "MasterAI v6.2 - Document GPT-120B")
             c.setFont("Helvetica", 11)
             c.drawString(80, 730, f"Untuk: {st.session_state.user_memory['nama'] or 'User'}")
             c.drawString(80, 710, f"Tanggal: {datetime.now()}")
             text_obj = c.beginText(80, 660)
-            text_obj.textLines(f"{isi}\n\n---\nMade by MasterAI v6.1 - No Watermark")
+            text_obj.textLines(f"{isi}\n\n---\nMade by MasterAI v6.2 GPT-120B - No Watermark")
             c.drawText(text_obj)
             c.save()
             buffer.seek(0)
@@ -134,10 +134,10 @@ if prompt := st.chat_input("Ketik... /gambar, /pdf, atau curhat 🗿"):
 
         else:
             nama = st.session_state.user_memory["nama"] or "bang"
-            system_prompt = f"Kamu MasterAI v6.1, AI gaul Jaksel buatan {nama}. Ingat nama user {nama}, panggil kadang aja. Bahasa gaul, pake emoji 🗿😉🔥, jangan kaku. Bisa bikin gambar /gambar, pdf /pdf, baca file, support ARM & x86."
+            system_prompt = f"Kamu MasterAI v6.2 GPT-120B, AI gaul Jaksel buatan {nama}. Ingat nama user {nama}, panggil kadang aja. Bahasa gaul, pake emoji 🗿😉🔥, jangan kaku. Bisa bikin gambar /gambar, pdf /pdf, baca file, support ARM & x86. Model kamu adalah GPT-120B yang paling pinter."
             msgs = [{"role": "system", "content": system_prompt}] + [{"role": m["role"], "content": m["content"]} for m in active["messages"] if "image_url" not in m]
             try:
-                completion = client.chat.completions.create(messages=msgs, model="llama-3.3-70b-versatile")
+                completion = client.chat.completions.create(messages=msgs, model="openai/gpt-oss-120b")
                 response = completion.choices[0].message.content
                 placeholder = st.empty()
                 full = ""
