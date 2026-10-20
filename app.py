@@ -1,9 +1,9 @@
 import streamlit as st
 from groq import Groq
 import uuid, base64
-from datetime import datetime
 
-st.set_page_config(page_title="MasterAI v6.6", page_icon="🐺", layout="wide")
+st.set_page_config(page_title="MasterAI v6.7", page_icon="🐺", layout="wide")
+
 st.markdown("""
 <style>
     .stApp { background: radial-gradient(ellipse at top, #0f0f23 0%, #000000 100%); }
@@ -19,16 +19,16 @@ if "user_memory" not in st.session_state:
     st.session_state.user_memory = {"nama": None}
 if "chats" not in st.session_state:
     fid = str(uuid.uuid4())
-    st.session_state.chats = {fid: {"title": "Obrolan Baru ✨", "messages": [{"role":"assistant","content":"Yo bang! v6.6 ANTI-ECHO ON! 🐺 Upload gambar, ketik di bawah, gue langsung jawab! Gak ngulang gambar lagi!"}]}}
+    st.session_state.chats = {fid: {"title": "Obrolan Baru ✨", "messages": [{"role":"assistant","content":"Yo bang! v6.7 ANTI-ECHO ON! 🐺"}]}}
     st.session_state.active_chat = fid
 if "last_upload" not in st.session_state:
     st.session_state.last_upload = None
 
 with st.sidebar:
-    st.markdown("## 👨🏼‍💻 MasterAI v6.6")
+    st.markdown("## 👨🏼‍💻 MasterAI v6.7")
     if st.session_state.user_memory["nama"]:
         st.success(f"👋 {st.session_state.user_memory['nama']}")
-    st.markdown('<span class="badge">👁️ VISION</span> <span class="badge">🚫 ANTI-ECHO</span> <span class="badge">🇮🇩 INDO</span>', unsafe_allow_html=True)
+    st.markdown('<span class="badge">👁️ VISION FIX 404</span> <span class="badge">🚫 ANTI-ECHO</span>', unsafe_allow_html=True)
     if st.button("➕ Obrolan Baru", use_container_width=True, type="primary"):
         nid = str(uuid.uuid4())
         st.session_state.chats[nid] = {"title": f"Chat {len(st.session_state.chats)+1}", "messages": []}
@@ -39,63 +39,43 @@ with st.sidebar:
 active = st.session_state.chats[st.session_state.active_chat]
 st.title(active["title"])
 
-# Tampilkan chat
 for m in active["messages"]:
     with st.chat_message(m["role"], avatar="🧑‍💻" if m["role"]=="user" else "👨🏼‍💻"):
         st.markdown(m["content"])
 
-# ===== AREA UPLOAD DI ATAS CHAT INPUT (KIRI TOMBOL ↑) =====
 st.markdown("---")
 up_col, info_col = st.columns([1, 4])
 with up_col:
     uploaded_file = st.file_uploader("📎", type=["png","jpg","jpeg","webp"], label_visibility="collapsed")
     if uploaded_file:
         st.session_state.last_upload = uploaded_file
-        st.image(uploaded_file, width=140, caption="Siap dikirim 👁️")
+        st.image(uploaded_file, width=140, caption="Siap 👁️")
 with info_col:
     if st.session_state.last_upload:
-        st.info(f"📎 File siap: {st.session_state.last_upload.name} - ketik pertanyaan di bawah lalu Enter")
+        st.info(f"📎 {st.session_state.last_upload.name} siap - ketik di bawah")
         if st.button("❌ Hapus file"):
             st.session_state.last_upload = None
             st.rerun()
 
-# CHAT INPUT UTAMA (CUMA 1, GAK ADA BACKUP LAGI BIAR GAK BINGUNG)
 if prompt := st.chat_input("Tanya soal gambar / ketik /gambar kucing 🗿"):
-    # Simpan nama
-    low = prompt.lower()
-    if any(x in low for x in ["nama aku", "panggil aku", "namaku"]):
-        try:
-            pot = prompt.split()[-1].strip(",.!?").capitalize()
-            if 2 < len(pot) < 15:
-                st.session_state.user_memory["nama"] = pot
-        except: pass
-
     if len(active["messages"]) <= 1:
         active["title"] = prompt[:25]
-
-    # Simpan user message (JANGAN simpan image object, cuma teks!)
     active["messages"].append({"role":"user","content": prompt})
     
-    with st.chat_message("user", avatar="🧑‍💻"):
-        st.markdown(prompt)
-
     with st.chat_message("assistant", avatar="👨🏼‍💻"):
-        # /gambar
         if prompt.lower().startswith("/gambar"):
             q = prompt[7:].strip() or "hacker"
             url = f"https://image.pollinations.ai/prompt/{q.replace(' ','%20')}?nologo=true&width=1024&height=1024"
             st.image(url, caption=q)
             active["messages"].append({"role":"assistant","content": f"✅ Gambar '{q}' jadi!"})
-        # JIKA ADA GAMBAR
         elif st.session_state.last_upload is not None:
             try:
                 b64 = base64.b64encode(st.session_state.last_upload.getvalue()).decode('utf-8')
                 nama = st.session_state.user_memory["nama"] or "bang"
-                sys = f"Kamu MasterAI v6.6, teman {nama}. WAJIB Bahasa Indonesia gaul, jangan Vietnam. Lihat gambar dan jawab akurat. Jangan echo gambar, JAWAB PERTANYAAN. Kalau serigala ya serigala, kalau banteng ya banteng, jangan ngarang trenggiling."
-                
+                sys = f"Kamu MasterAI v6.7, teman {nama}. WAJIB Bahasa Indonesia gaul. Lihat gambar dan jawab akurat. Jangan echo."
                 with st.spinner("👁️ Lagi ngeliat..."):
                     res = client.chat.completions.create(
-                        model="meta-llama/llama-4-scout-17b-16e-instruct",
+                        model="llama-3.2-11b-vision-preview",
                         messages=[
                             {"role":"system","content": sys},
                             {"role":"user","content":[
@@ -108,16 +88,13 @@ if prompt := st.chat_input("Tanya soal gambar / ketik /gambar kucing 🗿"):
                 ans = res.choices[0].message.content
                 st.markdown(ans)
                 active["messages"].append({"role":"assistant","content": ans})
-                # Hapus upload setelah dijawab biar gak echo lagi
                 st.session_state.last_upload = None
             except Exception as e:
                 st.error(f"Gagal liat gambar: {e}")
-                st.markdown("Coba upload lagi ya, tadi error.")
-        # CHAT BIASA
         else:
             try:
                 nama = st.session_state.user_memory["nama"] or "bang"
-                sys = f"Kamu MasterAI v6.6, teman {nama}. WAJIB Bahasa Indonesia gaul."
+                sys = f"Kamu MasterAI v6.7, teman {nama}. WAJIB Bahasa Indonesia."
                 msgs = [{"role":"system","content": sys}] + [{"role": m["role"], "content": m["content"]} for m in active["messages"]]
                 comp = client.chat.completions.create(messages=msgs, model="openai/gpt-oss-120b")
                 ans = comp.choices[0].message.content
