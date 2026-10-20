@@ -34,7 +34,7 @@ if "chats" not in st.session_state:
     st.session_state.chats = {
         first_id: {
             "title": "Obrolan Baru ✨", 
-            "messages": [{"role": "assistant", "content": "Yo bang! MasterAI v6.1 udah hidup! 6 visi lu masuk semua 🗿🔥\n\nCoba:\n- `panggil aku Bagas`\n- `/gambar kucing hacker`\n- `/pdf buatkan laporan`"}],
+            "messages": [{"role": "assistant", "content": "Yo bang! Selamat datang yaa! 🗿🔥\n\nCoba:\n- `panggil aku Bagas`\n- `/gambar kucing hacker`\n- `/pdf buatkan laporan`"}],
             "created": datetime.now().strftime("%d %b")
         }
     }
