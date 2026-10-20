@@ -99,7 +99,7 @@ if "user_memory" not in st.session_state:
     st.session_state.user_memory = {"nama": None, "topik": []}
 if "chats" not in st.session_state:
     fid = str(uuid.uuid4())
-    st.session_state.chats = {fid: {"title": "Obrolan Pertama 🗿", "messages": [], "created": time.time()}}
+    st.session_state.chats = {fid: {"title": "Siap Memulai Obrolan!", "messages": [], "created": time.time()}}
     st.session_state.active_chat = fid
 
 def get_active():
