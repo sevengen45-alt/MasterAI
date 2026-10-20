@@ -143,7 +143,7 @@ if prompt := st.chat_input(f"Tanya apa {st.session_state.user_memory['nama'] or 
         st.markdown(prompt)
     with st.chat_message("assistant", avatar="👨🏼‍💻"):
         ph = st.empty()
-        ph.markdown("▌ _lagi mikir..._ 🧠")
+        ph.markdown("▌ _Thinking...")
         try:
             nama = st.session_state.user_memory["nama"] or "bang"
             system_prompt = f"Kamu MasterAI v9.3. Nama user {nama}. WAJIB Bahasa Indonesia gaul Jaksel, santai, kocak. Jawab jelas."
