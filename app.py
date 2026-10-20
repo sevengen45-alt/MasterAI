@@ -78,7 +78,7 @@ if prompt := st.chat_input("Ketik pertanyaan kamu di sini, bebas!"):
         st.markdown(prompt)
 
     with st.chat_message("assistant", avatar="🤖"):
-        with st.spinner("MasterAI lagi ngehack jawaban..."):
+        with st.spinner("MasterAI lagi memproses pertanyaan  mu😉👌🏼..."):
             try:
                 completion = client.chat.completions.create(
                     messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.messages],
