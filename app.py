@@ -18,16 +18,18 @@ if str.button("Tanya"):
         with str.spinner("Tunggu..."):
             try:
                 # Panggil mesin Groq super cepat
-                response = client.chat.completions.create(
-                   model="openai/gpt-oss-20b",
-                    messages=[{"role": "user", "content": user_input}]
-                )
-                jawaban = response.choices.message.content
+              try:
+    response = client.chat.completions.create(
+        model="openai/gpt-oss-20b", # model baru yang tadi
+        messages=[
+            {"role": "user", "content": pertanyaan}
+        ]
+    )
+    hasil = response.choices[0].message.content
+    st.success(hasil)
+
+except Exception as e:
+    st.error(f"Error: {e}")
                 
-                # Tampilkan hasil jawaban
-                str.write(jawaban)
-                
-            except Exception as e:
-                str.error(f"Error: {e}")
     else:
         str.warning("Ketik pertanyaan dulu!")
