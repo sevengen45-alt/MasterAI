@@ -76,14 +76,14 @@ st.markdown("""
 if "messages" not in st.session_state: st.session_state.messages = []
 
 with st.sidebar:
-    st.markdown("### ⚡ MASTER AI V4 LASER")
+    st.markdown("### ⚡ MasterAI")
     nama = st.text_input("Nama lu siapa bang?", placeholder="Bintang")
     if st.button("➕ Obrolan Baru", type="primary", use_container_width=True):
         st.session_state.messages = []; st.rerun()
 
 if not st.session_state.messages:
     st.markdown('<div class="glowing-title">Siap Memulai Obrolan!</div>', unsafe_allow_html=True)
-    st.markdown("<p style='text-align:center; color:#666;'>V4 - Laser Running Light</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center; color:#666;'>Dibuat oleh Jonathan Kristian sergio Marut</p>", unsafe_allow_html=True)
 
 for m in st.session_state.messages:
     with st.chat_message(m["role"]): st.markdown(m["content"])
