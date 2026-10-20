@@ -69,7 +69,7 @@ if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "assistant", "content": "Yo bang! 😎 MasterAI v3.0 udah aktif. Mau tanya apa hari ini? 👨🏼‍💻"}]
 
 for msg in st.session_state.messages:
-    with st.chat_message(msg["role"], avatar="🧑‍💻" if msg["role"]=="user" else "🤖"):
+    with st.chat_message(msg["role"], avatar="🧑‍💻" if msg["role"]=="user" else "👤"):
         st.markdown(msg["content"])
 
 if prompt := st.chat_input("Ketik pertanyaan kamu di sini, bebas!"):
@@ -77,7 +77,7 @@ if prompt := st.chat_input("Ketik pertanyaan kamu di sini, bebas!"):
     with st.chat_message("user", avatar="🧑‍💻"):
         st.markdown(prompt)
 
-    with st.chat_message("assistant", avatar="👤"):
+    with st.chat_message("assistant", avatar="🤖"):
         with st.spinner("MasterAI lagi memproses pertanyaan  mu😉👌🏼..."):
             try:
                 completion = client.chat.completions.create(
