@@ -1,135 +1,171 @@
 import streamlit as st
+import time
+import random
 
-st.set_page_config(page_title="MASTER AI v9.3 - Hidup", page_icon="🔥", layout="wide")
+# --- CONFIG ---
+st.set_page_config(
+    page_title="MASTER AI - Obrolan Hidup",
+    page_icon="🔥",
+    layout="wide"
+)
 
-# --- UI DOANG YANG GUE UBAH JADI LEBIH HIDUP BERWARNA ---
+# --- CSS GLOWING HIDUP ---
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap');
     
     .stApp {
-        background: #0B0B14 !important;
-        background-image: 
-            radial-gradient(at 30% 20%, rgba(0, 245, 255, 0.15) 0px, transparent 50%),
-            radial-gradient(at 80% 0%, rgba(127, 0, 255, 0.25) 0px, transparent 50%),
-            radial-gradient(at 100% 80%, rgba(255, 0, 106, 0.15) 0px, transparent 50%) !important;
+        background: radial-gradient(circle at 20% 30%, #1a1a40 0%, #000000 50%, #0f0c29 100%);
         font-family: 'Space Grotesk', sans-serif;
     }
-
-    /* JUDUL "Siap Memulai Obrolan!" - LEBIH HIDUP */
+    
+    /* Glowing Title */
     .glowing-title {
-        font-size: 4rem; font-weight: 800; text-align: center; margin-top: 100px;
-        background: linear-gradient(90deg, #FFFFFF 0%, #00F5FF 20%, #7F00FF 50%, #FF006A 75%, #FF8A00 100%);
-        background-size: 200% 200%;
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        animation: gradientShift 4s ease infinite, neonGlow 2s ease-in-out infinite alternate;
-        letter-spacing: -1px;
+        font-size: 3.5rem;
+        font-weight: 800;
+        text-align: center;
+        background: linear-gradient(90deg, #00F5FF, #7F00FF, #FF006A, #FF8A00);
+        background-size: 300% 300%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientMove 5s ease infinite, glowPulse 2s ease-in-out infinite;
+        margin-top: 80px;
+        text-shadow: 0 0 30px rgba(127, 0, 255, 0.5);
     }
-    @keyframes gradientShift {
-        0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; }
+    
+    @keyframes gradientMove {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
     }
-    @keyframes neonGlow {
-        0% { filter: drop-shadow(0 0 15px #00F5FF) drop-shadow(0 0 30px #7F00FF); }
-        100% { filter: drop-shadow(0 0 25px #FF006A) drop-shadow(0 0 45px #FF8A00); }
+    
+    @keyframes glowPulse {
+        0%, 100% { filter: drop-shadow(0 0 20px #7F00FF); }
+        50% { filter: drop-shadow(0 0 40px #00F5FF); }
     }
-
-    /* SIDEBAR - TETAP SAMA STRUKTURNYA, CUMA LEBIH GLASS */
+    
+    /* Glass Sidebar */
     section[data-testid="stSidebar"] {
-        background: rgba(17, 17, 25, 0.85) !important;
+        background: rgba(20, 20, 35, 0.8) !important;
         backdrop-filter: blur(20px);
-        border-right: 1px solid rgba(127, 0, 255, 0.2);
+        border-right: 1px solid rgba(127, 0, 255, 0.3);
     }
-
-    /* TOMBOL PUTIH TERANG & ANTI GELAP - LEBIH HIDUP */
-    div[data-testid="stButton"] > button {
-        border-radius: 12px !important; font-weight: 700 !important; transition: all 0.3s ease !important;
-    }
-    /* Tombol Obrolan Baru yang di foto lu */
-    button[kind="primary"] {
-        background: linear-gradient(90deg, #FF3B30, #FF9500) !important;
-        box-shadow: 0 0 20px rgba(255, 59, 48, 0.5) !important;
-    }
-    button[kind="primary"]:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 35px rgba(255, 149, 0, 0.8) !important;
-    }
-
-    /* INPUT NAMA & CHAT INPUT - GLOWING */
-    .stTextInput > div > div > input {
-        background: rgba(255,255,255,0.06) !important;
-        border: 1px solid rgba(0, 245, 255, 0.2) !important;
-        border-radius: 12px !important; color: white !important;
-    }
-    .stTextInput > div > div > input:focus {
-        border-color: #00F5FF !important;
-        box-shadow: 0 0 15px rgba(0, 245, 255, 0.3) !important;
-    }
-    .stChatInput {
+    
+    /* Chat Bubble */
+    .stChatMessage {
         background: rgba(255,255,255,0.05) !important;
-        border: 1px solid rgba(127, 0, 255, 0.3) !important;
-        box-shadow: 0 0 20px rgba(127, 0, 255, 0.15) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 20px !important;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    
+    /* Button Obrolan Baru - Glowing Red Orange */
+    div[data-testid="stButton"] > button {
+        background: linear-gradient(90deg, #FF3B30, #FF9500) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 12px !important;
+        font-weight: 700 !important;
+        box-shadow: 0 0 20px rgba(255, 59, 48, 0.5) !important;
+        transition: all 0.3s ease !important;
+        width: 100%;
+    }
+    div[data-testid="stButton"] > button:hover {
+        transform: scale(1.03);
+        box-shadow: 0 0 30px rgba(255, 149, 0, 0.8) !important;
+    }
+    
+    /* Input chat glowing */
+    .stChatInput {
+        background: rgba(255,255,255,0.08) !important;
+        border: 1px solid rgba(0, 245, 255, 0.3) !important;
+        box-shadow: 0 0 15px rgba(0, 245, 255, 0.2);
     }
 </style>
 """, unsafe_allow_html=True)
 
-# --- LOGIC NYA TETAP SAMA PERSIS KAYAK v9.3 PUNYA LU - GUE GAK UBAH ---
-# (Ini biar nama, obrolan, pemrosesan bahasa tetep)
-
+# --- SESSION STATE ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
+if "chats" not in st.session_state:
+    st.session_state.chats = ["Siap Memulai Obrolan!"]
 
-# SIDEBAR - STRUKTUR TETAP SAMA KAYAK DI FOTO
+# --- SIDEBAR ---
 with st.sidebar:
     st.markdown("### 🔥 MASTER AI v9.3")
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("PUTIH TERANG", use_container_width=True):
-            st.session_state.theme = "light"
-    with col2:
-        if st.button("ANTI GELAP", use_container_width=True):
-            st.session_state.theme = "dark"
+    st.markdown('<span style="color:#00F5FF; font-size:0.8rem;">● ONLINE • VERSI HIDUP</span>', unsafe_allow_html=True)
     
     st.divider()
     st.markdown("**Nama lu siapa bang?**")
-    nama = st.text_input("", placeholder="Bintang", label_visibility="collapsed")
+    nama = st.text_input("", placeholder="Contoh: Bintang", label_visibility="collapsed")
+    if nama:
+        st.success(f"Siap bang {nama}!")
     
     st.markdown("**💬 Obrolan**")
-    if st.button("➕ Obrolan Baru", type="primary", use_container_width=True):
+    if st.button("🔥 Obrolan Baru", use_container_width=True):
         st.session_state.messages = []
         st.rerun()
     
     st.divider()
-    st.markdown('<div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:10px; text-align:center; font-size:0.9rem; border:1px solid rgba(255,255,255,0.1)">Siap Memulai Obrolan!</div>', unsafe_allow_html=True)
+    st.markdown("**Riwayat**")
+    for chat in st.session_state.chats:
+        st.markdown(f'<div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; margin-bottom:8px; font-size:0.9rem;">💭 {chat}</div>', unsafe_allow_html=True)
+    
+    st.divider()
+    st.caption("Dibuat dengan santai oleh Juang 🔥")
 
-# MAIN - JUDUL SAMA PERSIS KAYAK DI FOTO
+# --- MAIN CONTENT ---
 if not st.session_state.messages:
     st.markdown('<div class="glowing-title">Siap Memulai Obrolan!</div>', unsafe_allow_html=True)
-    if nama:
-        st.markdown(f"<p style='text-align:center; color:rgba(255,255,255,0.6); margin-top:15px;'>Yo {nama}, gue siap nih! Tanya aja, gue jawab dengan santai ya!</p>", unsafe_allow_html=True)
-    else:
-        st.markdown("<p style='text-align:center; color:rgba(255,255,255,0.5); margin-top:15px;'>Tanya apa aja, gue jawab dengan santai ya!</p>", unsafe_allow_html=True)
+    st.markdown(f'<p style="text-align:center; color:rgba(255,255,255,0.6); margin-top:20px; font-size:1.2rem;">Yo {nama if nama else "bang"}, tanya apa aja, gue jawab dengan santai ya! 👌</p>', unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown('<div style="background:rgba(0,245,255,0.1); padding:20px; border-radius:15px; text-align:center; border:1px solid rgba(0,245,255,0.2)">🤖<br><b>Tanya Coding</b><br><span style="font-size:0.8rem; opacity:0.7">Error streamlit? sini gue bantu</span></div>', unsafe_allow_html=True)
+    with col2:
+        st.markdown('<div style="background:rgba(127,0,255,0.1); padding:20px; border-radius:15px; text-align:center; border:1px solid rgba(127,0,255,0.2)">🔥<br><b>Curhat Santai</b><br><span style="font-size:0.8rem; opacity:0.7">Gabut? ngobrol aja</span></div>', unsafe_allow_html=True)
+    with col3:
+        st.markdown('<div style="background:rgba(255,0,106,0.1); padding:20px; border-radius:15px; text-align:center; border:1px solid rgba(255,0,106,0.2)">💡<br><b>Bikin Ide</b><br><span style="font-size:0.8rem; opacity:0.7">Butuh ide konten? gas</span></div>', unsafe_allow_html=True)
 
-# CHAT HISTORY - LOGIC TETAP
+# Tampilkan chat history
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# LOGIC JAWABAN - GUE BALIKIN KE YANG SIMPLE BIAR GAK RIBET (GAK PAKE RESEARCH)
-def get_simple_answer(prompt, nama_user):
-    # Ini logic bahasa gaul santai lu yang lama, gak gue ubah-ubah
-    sapaan = f"bang {nama_user}" if nama_user else "bang"
-    return f"Oke {sapaan}, gue jawab dengan santai ya! Soal '{prompt}' itu menarik nih, mau gue jelasin dari sisi mana dulu?"
+# --- LOGIKA JAWABAN (BAHASA GAUL SANTAI) ---
+def get_santai_response(prompt, nama_user):
+    prompt_low = prompt.lower()
+    
+    # Aturan bahasa: santai, gaul, TAPI jangan bilang "aku akan jawab pake bahasa jaksel"
+    sapaan = f"Oke bang {nama_user}, " if nama_user else "Oke bang, "
+    
+    if "halo" in prompt_low or "hai" in prompt_low:
+        return f"{sapaan}halo juga! Gue udah siap nih, mau dibahas apa? Tanya aja, gue jawab dengan santai ya!"
+    elif "error" in prompt_low or "streamlit" in prompt_low:
+        return f"{sapaan}wah error lagi ya? Coba spill errornya apa, screenshot juga boleh. Gue bantu beresin sampe jalan, gue jawab dengan santai ya biar gak pusing!"
+    elif "ui.py" in prompt_low or "app.py" in prompt_low:
+        return f"{sapaan}nah itu dia! Jadi ui.py sama app.py itu beda file tapi fungsinya sama. Kalo di hosting lu settingnya ui.py, ya editnya di ui.py. Simple kan? Gue jelasin dengan santai ya!"
+    else:
+        responses = [
+            f"{sapaan}menarik nih pertanyaannya. Jadi gini, {prompt} itu sebenernya bisa kita breakdown pelan-pelan. Menurut gue, kuncinya ada di cara kita approachnya. Mau gue jelasin lebih detail? Gue jawab dengan santai ya!",
+            f"{sapaan}paham gue maksud lu. Kalo soal {prompt}, jujur ini agak tricky tapi seru buat dibahas. Gue punya beberapa ide, mau coba versi yang mana dulu?",
+            f"Yo {nama_user if nama_user else 'bang'}! Gas, kalo {prompt} itu gue udah ada bayangan. Kita bikin versi yang lebih hidup dan bercahaya kayak yang lu mau. Ada ide tambahan lagi gak?",
+        ]
+        return random.choice(responses)
 
-# INPUT
+# --- INPUT CHAT ---
 if prompt := st.chat_input("Tanya apa saja!"):
+    # User message
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
     
+    # AI Response
     with st.chat_message("assistant"):
-        # Simulasi jawaban simple
-        jawaban = get_simple_answer(prompt, nama if 'nama' in locals() else "")
-        st.markdown(jawaban)
+        with st.spinner("Lagi mikir..."):
+            time.sleep(0.8)
+            response = get_santai_response(prompt, nama)
+            st.markdown(response)
     
-    st.session_state.messages.append({"role": "assistant", "content": jawaban})
+    st.session_state.messages.append({"role": "assistant", "content": response})
