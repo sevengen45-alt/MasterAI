@@ -2,7 +2,7 @@ import streamlit as st
 from groq import Groq
 import uuid, base64
 
-st.set_page_config(page_title="MasterAI v6.8", page_icon="👁️", layout="wide")
+st.set_page_config(page_title="MasterAI v6.9", page_icon="👁️", layout="wide")
 
 st.markdown("""
 <style>
@@ -19,16 +19,16 @@ if "user_memory" not in st.session_state:
     st.session_state.user_memory = {"nama": None}
 if "chats" not in st.session_state:
     fid = str(uuid.uuid4())
-    st.session_state.chats = {fid: {"title": "Obrolan Baru ✨", "messages": [{"role":"assistant","content":"Yo bang! v6.8 VISION LLAMA 4 ON! 👁️🔥 Sekarang anti 404 & anti decommissioned!"}]}}
+    st.session_state.chats = {fid: {"title": "Obrolan Baru ✨", "messages": [{"role":"assistant","content":"Yo bang! v6.9 LLAVA ON! 👁️ Anti 404, anti echo!"}]}}
     st.session_state.active_chat = fid
 if "last_upload" not in st.session_state:
     st.session_state.last_upload = None
 
 with st.sidebar:
-    st.markdown("## 👨🏼‍💻 MasterAI v6.8")
+    st.markdown("## 👨🏼‍💻 MasterAI v6.9")
     if st.session_state.user_memory["nama"]:
-        st.success(f"👋 Halo, {st.session_state.user_memory['nama']}!")
-    st.markdown('<span class="badge">👁️ LLAMA 4 SCOUT</span> <span class="badge">🚫 ANTI-404</span> <span class="badge">🇮🇩 INDO</span>', unsafe_allow_html=True)
+        st.success(f"👋 {st.session_state.user_memory['nama']}")
+    st.markdown('<span class="badge">👁️ LLAVA FREE</span> <span class="badge">✅ ANTI-404</span> <span class="badge">🇮🇩 INDO</span>', unsafe_allow_html=True)
     if st.button("➕ Obrolan Baru", use_container_width=True, type="primary"):
         nid = str(uuid.uuid4())
         st.session_state.chats[nid] = {"title": f"Chat {len(st.session_state.chats)+1}", "messages": []}
@@ -71,32 +71,19 @@ if prompt := st.chat_input("Tanya soal gambar / ketik /gambar kucing 🗿"):
         
         elif st.session_state.last_upload is not None:
             b64 = base64.b64encode(st.session_state.last_upload.getvalue()).decode('utf-8')
-            nama = st.session_state.user_memory["nama"] or "bang"
-            sys = f"Kamu MasterAI v6.8, teman {nama}. WAJIB Bahasa Indonesia gaul 100%, jangan campur Vietnam. Lihat gambar dengan akurat. Kalau serigala ya serigala, banteng ya banteng. Jangan echo gambar, JAWAB PERTANYAAN."
+            sys = "Kamu MasterAI v6.9, WAJIB Bahasa Indonesia gaul. Lihat gambar dengan akurat. Jangan echo gambar, JAWAB PERTANYAAN."
             
-            with st.spinner("👁️ Lagi ngeliat pake LLAMA 4..."):
-                try:
-                    # MODEL BARU ANTI DECOMMISSIONED
-                    res = client.chat.completions.create(
-                        model="meta-llama/llama-4-scout-17b-16e-instruct",
-                        messages=[
-                            {"role":"system","content": sys},
-                            {"role":"user","content":[
-                                {"type":"text","text": prompt},
-                                {"type":"image_url","image_url":{"url": f"data:image/jpeg;base64,{b64}"}}
-                            ]}
-                        ],
-                        max_tokens=1000
-                    )
-                    ans = res.choices[0].message.content
-                    st.markdown(ans)
-                    active["messages"].append({"role":"assistant","content": ans})
-                    st.session_state.last_upload = None
-                except Exception as e:
-                    # Fallback ke Maverick kalau Scout 404
+            with st.spinner("👁️ Lagi ngeliat pake LLAVA..."):
+                MODELS_TO_TRY = [
+                    "llava-v1.5-7b-4096-preview",
+                    "llama-3.2-90b-vision-preview",
+                ]
+                ans = None
+                last_err = ""
+                for model_name in MODELS_TO_TRY:
                     try:
-                        res2 = client.chat.completions.create(
-                            model="meta-llama/llama-4-maverick-17b-128e-instruct",
+                        res = client.chat.completions.create(
+                            model=model_name,
                             messages=[
                                 {"role":"system","content": sys},
                                 {"role":"user","content":[
@@ -106,18 +93,22 @@ if prompt := st.chat_input("Tanya soal gambar / ketik /gambar kucing 🗿"):
                             ],
                             max_tokens=1000
                         )
-                        ans = res2.choices[0].message.content
-                        st.markdown(ans)
-                        active["messages"].append({"role":"assistant","content": ans})
-                        st.session_state.last_upload = None
-                    except Exception as e2:
-                        st.error(f"Gagal liat gambar: {e2}")
-                        st.markdown(f"Error detail: {e} | {e2}")
+                        ans = res.choices[0].message.content
+                        break
+                    except Exception as e:
+                        last_err = str(e)
+                        continue
+                
+                if ans:
+                    st.markdown(ans)
+                    active["messages"].append({"role":"assistant","content": ans})
+                    st.session_state.last_upload = None
+                else:
+                    st.error(f"Gagal: {last_err}")
         
         else:
             try:
-                nama = st.session_state.user_memory["nama"] or "bang"
-                sys = f"Kamu MasterAI v6.8, teman {nama}. WAJIB Bahasa Indonesia gaul."
+                sys = "Kamu MasterAI v6.9, WAJIB Bahasa Indonesia gaul."
                 msgs = [{"role":"system","content": sys}] + [{"role": m["role"], "content": m["content"]} for m in active["messages"]]
                 comp = client.chat.completions.create(messages=msgs, model="openai/gpt-oss-120b")
                 ans = comp.choices[0].message.content
