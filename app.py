@@ -24,7 +24,7 @@ except Exception:
     st.error("API Key belum ada di Secrets")
     st.stop()
 
-st.title("MasterAI 🇮🇩")
+st.title("MasterAI 🗣️")
 st.caption("Tanya apa aja!🦾‼️")
 
 if "messages" not in st.session_state:
