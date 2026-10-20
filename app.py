@@ -88,7 +88,7 @@ if not st.session_state.messages:
 for m in st.session_state.messages:
     with st.chat_message(m["role"]): st.markdown(m["content"])
 
-if p := st.chat_input("Tanya apa saja! ⚡ Laser"):
+if p := st.chat_input("Tanya apa saja!"):
     st.session_state.messages.append({"role":"user","content":p})
     with st.chat_message("user"): st.markdown(p)
     with st.chat_message("assistant"): st.markdown(f"Oke bang {nama or ''}, gue jawab santai ya! '{p}'")
