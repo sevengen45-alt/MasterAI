@@ -173,7 +173,7 @@ with st.sidebar:
     if st.session_state.user_memory["nama"]:
         st.success(f"👋 Yo {st.session_state.user_memory['nama']}!")
     else:
-        nama_input = st.text_input("Nama lu siapa bang?", placeholder="Bintang")
+        nama_input = st.text_input("Nama lu siapa bang?", placeholder="Cth: Juan")
         if nama_input:
             st.session_state.user_memory["nama"] = nama_input
             st.rerun()
