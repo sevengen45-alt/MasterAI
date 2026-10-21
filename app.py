@@ -3,103 +3,91 @@ from groq import Groq
 import uuid
 import time
 
-st.set_page_config(page_title="MasterAI v12 - Premium Aurora", page_icon="🌌", layout="wide")
+st.set_page_config(page_title="MasterAI v13 - Vibrant", page_icon="🎨", layout="wide")
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&display=swap');
-* {font-family: 'Plus Jakarta Sans', sans-serif !important;}
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@700;800;900&display=swap');
+* {font-family: 'Geist', sans-serif !important;}
 
-/* === BACKGROUND PREMIUM AURORA - GERAK PELAN ELEGAN === */
+/* BACKGROUND - MESH GRADIENT 5 WARNA BERGERAK PELAN TAPI VIBRANT */
 .stApp {
-    background: #07080F !important;
+    background-color: #080810 !important;
     background-image: 
-        radial-gradient(at 20% 30%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-        radial-gradient(at 80% 20%, rgba(255, 119, 198, 0.25) 0%, transparent 50%),
-        radial-gradient(at 50% 80%, rgba(0, 219, 216, 0.2) 0%, transparent 50%),
-        radial-gradient(at 90% 90%, rgba(255, 206, 84, 0.15) 0%, transparent 50%) !important;
-    animation: auroraSlow 20s ease infinite alternate !important;
+        radial-gradient(at 0% 0%, hsla(253,100%,70%,0.5) 0px, transparent 50%),
+        radial-gradient(at 50% 0%, hsla(189,100%,56%,0.4) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, hsla(22,100%,60%,0.4) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, hsla(343,100%,60%,0.5) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, hsla(24,100%,65%,0.3) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, hsla(189,100%,70%,0.4) 0px, transparent 50%) !important;
+    animation: meshMove 15s ease infinite alternate !important;
 }
-@keyframes auroraSlow {
-    0% { filter: hue-rotate(0deg) brightness(1); background-position: 0% 0%; }
-    100% { filter: hue-rotate(15deg) brightness(1.1); background-position: 10% 10%; }
+@keyframes meshMove {
+    0% { background-position: 0% 0%, 50% 0%, 100% 0%, 0% 100%, 50% 100%, 100% 100%; }
+    100% { background-position: 10% 20%, 60% 10%, 90% 20%, 10% 80%, 40% 90%, 90% 80%; }
 }
 
-/* === TITLE - GRADIENT HALUS JALAN PELAN, GAK NORAK === */
+/* TITLE - VIBRANT 3 WARNA DOANG TAPI PEKAT + GERAK */
 h1 {
-    background: linear-gradient(90deg, #A78BFA, #60A5FA, #34D399, #FBBF24, #F472B6, #A78BFA) !important;
+    background: linear-gradient(100deg, #8B5CF6 0%, #06B6D4 50%, #F43F5E 100%) !important;
     background-size: 200% 100% !important;
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
-    text-align: center !important; font-weight: 800 !important; font-size: 4.5rem !important;
-    animation: gradientFlow 8s ease infinite !important;
-    letter-spacing: -2px !important;
+    font-weight: 900 !important; font-size: 4.8rem !important; text-align: center !important;
+    letter-spacing: -0.04em !important;
+    animation: titleShift 4s ease infinite !important;
 }
-@keyframes gradientFlow { 0%{background-position:0%} 50%{background-position:100%} 100%{background-position:0%} }
-@media (max-width: 600px) { h1 {font-size: 2.8rem !important;} }
+@keyframes titleShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+@media (max-width: 600px) { h1 {font-size: 3rem !important;} }
 
-/* === SIDEBAR - KACA BLUR PREMIUM === */
+/* SIDEBAR - DARK + GLOW TIPIS WARNA-WARNI */
 section[data-testid="stSidebar"] {
-    background: rgba(12, 12, 20, 0.8) !important;
-    backdrop-filter: blur(30px) saturate(150%) !important;
-    border-right: 1px solid rgba(255,255,255,0.08) !important;
+    background: rgba(10,10,18,0.9) !important;
+    backdrop-filter: blur(24px) !important;
+    border-right: 1px solid rgba(139,92,246,0.2) !important;
 }
 
-/* === CHAT BUBBLE - GLASS + WARNA HALUS === */
+/* CHAT - SETIAP PESAN WARNA BEDA TIPIS */
 .stChatMessage {
-    background: rgba(255,255,255,0.06) !important;
-    backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255,255,255,0.08) !important;
-    border-radius: 18px !important;
-    transition: all 0.4s ease !important;
+    background: rgba(255,255,255,0.07) !important;
+    backdrop-filter: blur(16px) !important;
+    border-radius: 16px !important;
+    border-left: 3px solid transparent !important;
+    border-image: linear-gradient(180deg, #8B5CF6, #06B6D4) 1 !important;
 }
-.stChatMessage:hover {
-    background: rgba(255,255,255,0.08) !important;
-    border-color: rgba(167,139,250,0.3) !important;
-    transform: translateY(-1px);
+.stChatMessage:nth-child(even) {
+    border-image: linear-gradient(180deg, #F43F5E, #FB923C) 1 !important;
 }
-.stChatMessage p { color: rgba(255,255,255,0.92) !important; font-size: 15.5px !important; line-height: 1.6 !important; }
+.stChatMessage p { color: #F8FAFC !important; font-size: 15.5px !important; }
 
-/* === BADGE - PASTEL ELEGAN, GERAK PELAN === */
+/* BADGE - WARNA SOLID VIBRANT, GAK PELANGI JALAN */
 .badge {
-    background: rgba(255,255,255,0.08) !important;
-    backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(255,255,255,0.12) !important;
-    padding: 5px 12px; border-radius: 100px; color: rgba(255,255,255,0.9);
-    font-size: 10px; font-weight: 700; letter-spacing: 0.5px; margin: 3px; display: inline-block;
+    padding: 6px 14px; border-radius: 100px; font-weight: 800; font-size: 11px; color: white;
+    display: inline-block; margin: 3px;
 }
-.badge-premium {
-    background: linear-gradient(90deg, rgba(167,139,250,0.2), rgba(96,165,250,0.2)) !important;
-    border: 1px solid rgba(167,139,250,0.3) !important;
-    animation: softGlow 3s ease infinite alternate !important;
-}
-@keyframes softGlow { 0%{box-shadow:0 0 10px rgba(167,139,250,0.2)} 100%{box-shadow:0 0 20px rgba(96,165,250,0.3)} }
+.b-purple { background: #8B5CF6 !important; box-shadow: 0 0 20px rgba(139,92,246,0.5) !important; }
+.b-cyan { background: #06B6D4 !important; box-shadow: 0 0 20px rgba(6,182,214,0.5) !important; }
+.b-pink { background: #F43F5E !important; box-shadow: 0 0 20px rgba(244,63,94,0.5) !important; }
+.b-orange { background: #FB923C !important; box-shadow: 0 0 20px rgba(251,146,60,0.5) !important; }
 
-/* === INPUT - BORDER PELANGI HALUS, GAK NORAK === */
+/* INPUT - INI KUNCINYA: BORDER PELANGI 3 WARNA GERAK HALUS */
 [data-testid="stChatInput"] {
-    background: linear-gradient(90deg, #A78BFA, #60A5FA, #34D399, #FBBF24, #F472B6) !important;
+    background: linear-gradient(90deg, #8B5CF6, #06B6D4, #F43F5E, #FB923C, #8B5CF6) !important;
     background-size: 300% 100% !important;
-    animation: gradientFlow 6s ease infinite !important;
-    padding: 1.5px !important; border-radius: 20px !important;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05) inset !important;
+    animation: borderFlow 3s linear infinite !important;
+    padding: 2px !important; border-radius: 24px !important;
+    box-shadow: 0 0 30px rgba(139,92,246,0.3) !important;
 }
+@keyframes borderFlow { 0%{background-position:0%} 100%{background-position:300%} }
 [data-testid="stChatInput"] > div {
-    background: rgba(15, 15, 25, 0.95) !important;
-    backdrop-filter: blur(20px) !important;
-    border-radius: 18.5px !important;
+    background: #0F0F19 !important; border-radius: 22px !important;
 }
 [data-testid="stChatInput"] textarea { color: white !important; }
 [data-testid="stChatInput"] button {
-    background: rgba(255,255,255,0.1) !important;
-    backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(255,255,255,0.1) !important;
-    border-radius: 12px !important;
-    transition: all 0.3s ease !important;
+    background: linear-gradient(135deg, #8B5CF6, #06B6D4) !important;
+    border-radius: 12px !important; transition: 0.3s !important;
 }
-[data-testid="stChatInput"] button:hover {
-    background: linear-gradient(90deg, #A78BFA, #60A5FA) !important;
-    transform: scale(1.05);
-}
+[data-testid="stChatInput"] button:hover { transform: scale(1.05); box-shadow: 0 0 20px #8B5CF6; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -117,8 +105,8 @@ if "chats" not in st.session_state:
 def get_active(): return st.session_state.chats[st.session_state.active_chat]
 
 with st.sidebar:
-    st.markdown("### 🌌 MASTER AI v12")
-    st.markdown('<span class="badge badge-premium">PREMIUM</span> <span class="badge">JUAN • 15</span> <span class="badge">MAUMERE</span>', unsafe_allow_html=True)
+    st.markdown("### 🎨 MASTER AI v13")
+    st.markdown('<span class="badge b-purple">JUAN</span> <span class="badge b-cyan">VIBRANT</span> <span class="badge b-pink">15 TH</span> <span class="badge b-orange">MAUMERE</span>', unsafe_allow_html=True)
     st.divider()
     if st.session_state.user_memory["nama"]:
         st.success(f"👋 Yo {st.session_state.user_memory['nama']}!")
@@ -128,9 +116,9 @@ with st.sidebar:
             st.session_state.user_memory["nama"] = nama_input
             st.rerun()
     st.markdown("### 💬 Obrolan")
-    if st.button("➕ Obrolan Baru", use_container_width=True):
+    if st.button("➕ Obrolan Baru", use_container_width=True, type="primary"):
         nid = str(uuid.uuid4())
-        st.session_state.chats[nid] = {"title": f"Chat {len(st.session_state.chats)+1}", "messages": [], "created": time.time()}
+        st.session_state.chats[nid] = {"title": f"Chat {len(st.session_state.chats)+1} ✨", "messages": [], "created": time.time()}
         st.session_state.active_chat = nid
         st.rerun()
     st.divider()
@@ -142,20 +130,20 @@ with st.sidebar:
 active = get_active()
 st.title(active["title"])
 
-with st.expander("💬 Obrolan (HP)", expanded=False):
+with st.expander("💬 Daftar Obrolan (HP)", expanded=False):
     st.write(f"{len(st.session_state.chats)} obrolan")
 
 for m in active["messages"]:
-    with st.chat_message(m["role"], avatar="👤" if m["role"]=="user" else "✨"):
+    with st.chat_message(m["role"], avatar="👤" if m["role"]=="user" else "🎨"):
         st.markdown(m["content"])
 
 if prompt := st.chat_input(f"Tanya apa {st.session_state.user_memory['nama'] or 'saja'}..."):
     if len(active["messages"]) == 0: active["title"] = prompt[:35]
     active["messages"].append({"role": "user", "content": prompt})
     with st.chat_message("user", avatar="👤"): st.markdown(prompt)
-    with st.chat_message("assistant", avatar="✨"):
+    with st.chat_message("assistant", avatar="🎨"):
         ph = st.empty()
-        ph.markdown("▌ _sedang berpikir..._")
+        ph.markdown("▌ _memproses..._")
         try:
             nama = st.session_state.user_memory["nama"] or "bang"
             if any(k in prompt.lower() for k in ["siapa yang membuat", "siapa pembuat", "who made you", "dibuat siapa", "buatan siapa", "developer"]):
@@ -163,15 +151,15 @@ if prompt := st.chat_input(f"Tanya apa {st.session_state.user_memory['nama'] or 
                 ph.markdown(ans)
                 active["messages"].append({"role": "assistant", "content": ans})
             else:
-                system_prompt = f"Kamu MasterAI v12 Premium. PEMBUAT KAMU {DEVELOPER_INFO}. Jangan jawab OpenAI. User: {nama}. Bahasa santai Jaksel tapi elegan."
+                system_prompt = f"Kamu MasterAI v13 Vibrant. PEMBUAT KAMU {DEVELOPER_INFO}. Jangan jawab OpenAI. User: {nama}. Santai Jaksel."
                 messages = [{"role": "system", "content": system_prompt}] + active["messages"]
-                res = client.chat.completions.create(model="openai/gpt-oss-120b", messages=messages, temperature=0.8, max_tokens=1500)
+                res = client.chat.completions.create(model="openai/gpt-oss-120b", messages=messages, temperature=0.85, max_tokens=1500)
                 ans = res.choices[0].message.content
                 full = ""
                 for w in ans.split(" "):
                     full += w + " "
                     ph.markdown(full + "▌")
-                    time.sleep(0.015)
+                    time.sleep(0.02)
                 ph.markdown(full)
                 active["messages"].append({"role": "assistant", "content": full})
         except Exception as e:
