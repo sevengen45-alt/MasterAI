@@ -106,7 +106,7 @@ def get_active():
     return st.session_state.chats[st.session_state.active_chat]
 
 with st.sidebar:
-    st.markdown("### 🧠 MASTER AI v9.3")
+    st.markdown("### MasterAI")
     st.markdown('<span class="badge">PUTIH TERANG</span> <span class="badge">ANTI GELAP</span>', unsafe_allow_html=True)
     st.divider()
     if st.session_state.user_memory["nama"]:
