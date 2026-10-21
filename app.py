@@ -146,7 +146,7 @@ if prompt := st.chat_input(f"Tanya apa {st.session_state.user_memory['nama'] or 
         ph.markdown("▌ _Thinking...")
         try:
             nama = st.session_state.user_memory["nama"] or "bang"
-            system_prompt = f"Kamu MasterAI v9.3. Nama user {nama}. WAJIB Bahasa Indonesia gaul Jaksel, santai, kocak. Jawab jelas."
+            system_prompt = f"Kamu MasterAI v9.3. Nama user {nama}. WAJIB Bahasa Indonesia gaul gitu, santai, kocak. Jawab jelas."
             messages = [{"role": "system", "content": system_prompt}] + active["messages"]
             res = client.chat.completions.create(model="openai/gpt-oss-120b", messages=messages, temperature=0.85, max_tokens=1200)
             ans = res.choices[0].message.content
