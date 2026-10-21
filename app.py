@@ -16,7 +16,7 @@ st.markdown("""
     background-attachment: fixed;
 }
 
-/* LITTLE TITLE */
+/* JUMBO TITLE */
 h1 {
     background: linear-gradient(90deg, #00F5FF, #7B61FF, #FF00E5, #FF8A00) !important;
     -webkit-background-clip: text !important;
