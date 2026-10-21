@@ -3,146 +3,202 @@ from groq import Groq
 import uuid
 import time
 
-st.set_page_config(page_title="MasterAI v18 - White Rainbow", page_icon="🌈", layout="wide")
+st.set_page_config(page_title="MasterAI v19 - Premium", page_icon="✨", layout="wide")
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
-* {font-family: 'Inter', -apple-system, sans-serif !important;}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
-/* ===== BACKGROUND - PUTIH APPLE + GLOW PELANGI SUPER HALUS ===== */
+* { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif !important; }
+
+/* ===== CANVAS PREMIUM - PUTIH SUTRA ===== */
 .stApp {
-    background: #FBFBFD !important;
+    background: #FEFEFF !important;
 }
 .stApp::before {
     content: "";
     position: fixed; inset: 0;
     background: 
-        radial-gradient(at 10% 10%, rgba(255,0,85,0.05) 0%, transparent 45%),
-        radial-gradient(at 90% 10%, rgba(255,171,0,0.04) 0%, transparent 45%),
-        radial-gradient(at 50% 50%, rgba(0,230,118,0.03) 0%, transparent 60%),
-        radial-gradient(at 10% 90%, rgba(41,121,255,0.05) 0%, transparent 45%),
-        radial-gradient(at 90% 90%, rgba(170,0,255,0.04) 0%, transparent 45%);
+        radial-gradient(1200px at 10% -10%, rgba(255,45,85,0.04) 0%, transparent 60%),
+        radial-gradient(1200px at 90% -10%, rgba(255,204,0,0.035) 0%, transparent 60%),
+        radial-gradient(1000px at 50% 110%, rgba(0,122,255,0.03) 0%, transparent 60%);
     pointer-events: none;
     z-index: -1;
-    animation: whiteRainbowBg 20s ease infinite alternate;
-}
-@keyframes whiteRainbowBg {
-    0% { opacity: 0.8; filter: hue-rotate(0deg); }
-    100% { opacity: 1; filter: hue-rotate(20deg); }
 }
 
-/* ===== JUDUL - HITAM TAPI ADA PELANGI TIPIS JALAN DIBAWAHNYA ===== */
-.white-rainbow-title {
-    color: #1D1D1F !important;
-    text-align: center !important;
-    font-weight: 900 !important;
-    font-size: 3.5rem !important;
-    letter-spacing: -0.04em !important;
-    line-height: 1 !important;
-    display: block !important;
-    padding: 40px 0 0 0 !important;
-    position: relative !important;
+/* ===== HEADER PREMIUM ===== */
+.premium-header {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 48px 24px 32px 24px;
+    text-align: center;
 }
-.white-rainbow-title::after {
-    content: "";
-    display: block;
-    width: 200px;
-    height: 4px;
-    margin: 15px auto 0 auto;
-    background: linear-gradient(90deg, #FF0055, #FFAB00, #00E676, #2979FF, #AA00FF, #FF0055);
-    background-size: 400% 100%;
-    animation: rainbowLine 3s linear infinite;
+.premium-title {
+    font-size: 3.25rem !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.05em !important;
+    line-height: 0.95 !important;
+    color: #0A0A0B !important;
+    margin: 0 !important;
+    position: relative;
+    display: inline-block;
+}
+.premium-title-gradient {
+    background: linear-gradient(90deg, #FF2D55, #FF9500, #FFCC00, #34C759, #007AFF, #AF52DE, #FF2D55);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: premiumRainbow 8s linear infinite;
+}
+@keyframes premiumRainbow { 0%{background-position:0%} 100%{background-position:300%} }
+
+.premium-underline {
+    width: 72px;
+    height: 3px;
+    margin: 20px auto 0 auto;
+    background: linear-gradient(90deg, #FF2D55, #FF9500, #FFCC00, #34C759, #007AFF, #AF52DE);
+    background-size: 300% 100%;
+    animation: premiumRainbow 8s linear infinite;
     border-radius: 100px;
 }
-@keyframes rainbowLine { 0%{background-position:0%} 100%{background-position:400%} }
-.white-rainbow-sub {
-    text-align: center !important;
-    color: #86868B !important;
-    font-size: 15px !important;
-    margin: 12px 0 30px 0 !important;
+.premium-sub {
+    margin-top: 16px;
+    font-size: 14px !important;
     font-weight: 500 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    color: #8E8E93 !important;
 }
-@media (max-width: 600px) { .white-rainbow-title { font-size: 2.2rem !important; } }
 
-/* ===== SIDEBAR - PUTIH + BORDER PELANGI TIPIS ===== */
+/* ===== SIDEBAR PREMIUM - MACOS FINDER ===== */
 section[data-testid="stSidebar"] {
-    background: #FFFFFF !important;
-    border-right: 1px solid rgba(0,0,0,0.06) !important;
-    position: relative;
+    background: rgba(249,249,251,0.8) !important;
+    backdrop-filter: blur(40px) saturate(200%) !important;
+    border-right: 0.5px solid rgba(0,0,0,0.06) !important;
 }
-section[data-testid="stSidebar"]::before {
+section[data-testid="stSidebar"] > div { padding-top: 24px !important; }
+
+/* Rainbow border 1.5px di kanan sidebar */
+section[data-testid="stSidebar"]::after {
     content: "";
     position: absolute;
     top: 0; right: 0;
-    width: 2px; height: 100%;
-    background: linear-gradient(180deg, #FF0055, #FFAB00, #00E676, #2979FF, #AA00FF);
+    width: 1.5px; height: 100%;
+    background: linear-gradient(180deg, #FF2D55, #FF9500, #FFCC00, #34C759, #007AFF, #AF52DE);
     background-size: 100% 400%;
-    animation: sidebarRainbow 5s linear infinite;
+    animation: sidebarPremiumFlow 10s linear infinite;
+    opacity: 0.6;
 }
-@keyframes sidebarRainbow { 0%{background-position:0% 0%} 100%{background-position:0% 400%} }
+@keyframes sidebarPremiumFlow { 0%{background-position:0% 0%} 100%{background-position:0% 400%} }
+
+.sidebar-brand {
+    font-weight: 700; font-size: 13px; letter-spacing: 0.04em; color: #1C1C1E; margin-bottom: 24px;
+}
 section[data-testid="stSidebar"] .stButton button {
-    background: #F5F5F7 !important;
-    border: none !important;
-    color: #1D1D1F !important;
+    background: #FFFFFF !important;
+    border: 0.5px solid rgba(0,0,0,0.06) !important;
     border-radius: 10px !important;
     font-weight: 500 !important;
+    font-size: 13.5px !important;
+    color: #1C1C1E !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 0 0 0.5px rgba(0,0,0,0.02) !important;
+    transition: all 0.2s ease !important;
+    text-align: left !important;
+    padding: 10px 12px !important;
+}
+section[data-testid="stSidebar"] .stButton button:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08), 0 0 0 0.5px rgba(0,0,0,0.06) !important;
+    transform: translateY(-0.5px) !important;
 }
 
-/* ===== CHAT - PUTIH + BORDER KIRI PELANGI LIVE ===== */
+/* ===== CHAT PREMIUM - FLOATING CARD ===== */
 .stChatMessage {
-    background: #FFFFFF !important;
-    border: 1px solid rgba(0,0,0,0.06) !important;
-    border-left: 3px solid transparent !important;
-    border-image: linear-gradient(180deg, #FF0055, #FFAB00, #00E676, #2979FF, #AA00FF) 1 !important;
-    border-radius: 16px !important;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
-    padding: 4px !important;
-    margin: 10px auto !important;
     max-width: 720px !important;
-}
-.stChatMessage p { color: #1D1D1F !important; font-size: 15px !important; line-height: 1.6 !important; }
-
-/* ===== BADGE - PUTIH + PELANGI GRADIENT ===== */
-.pill {
-    display: inline-block; padding: 6px 14px; border-radius: 100px;
-    font-size: 11px; font-weight: 700; margin: 3px;
-    background-size: 300% 100% !important;
-    animation: rainbowLine 3s linear infinite !important;
-    color: white !important;
-}
-.pill-r1 { background: linear-gradient(90deg, #FF0055, #FFAB00) !important; }
-.pill-r2 { background: linear-gradient(90deg, #00E676, #2979FF) !important; }
-.pill-r3 { background: linear-gradient(90deg, #2979FF, #AA00FF) !important; }
-.pill-white { background: #F5F5F7 !important; color: #1D1D1F !important; border: 1px solid rgba(0,0,0,0.06) !important; animation: none !important; }
-
-/* ===== TASKBAR - PUTIH APPLE + BORDER PELANGI LIVE JALAN ===== */
-div[data-testid="stChatInput"] {
-    background: linear-gradient(90deg, #FF0055, #FFAB00, #00E676, #2979FF, #AA00FF, #FF0055) !important;
-    background-size: 500% 100% !important;
-    animation: rainbowLine 2.5s linear infinite !important;
-    padding: 2px !important;
-    border-radius: 24px !important;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04) !important;
-    bottom: 24px !important;
-    max-width: 700px !important;
     margin: 0 auto !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+}
+.stChatMessage > div {
+    padding: 16px 0 !important;
+}
+div[data-testid="stChatMessageContent"] {
+    background: #FFFFFF !important;
+    border: 0.5px solid rgba(0,0,0,0.06) !important;
+    border-radius: 20px !important;
+    padding: 16px 20px !important;
+    box-shadow: 
+        0 1px 2px rgba(0,0,0,0.04),
+        0 4px 12px rgba(0,0,0,0.04),
+        0 0 0 0.5px rgba(0,0,0,0.02) !important;
+}
+.stChatMessage[data-testid="stChatMessage"]:nth-of-type(even) div[data-testid="stChatMessageContent"] {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 8px 20px !important;
+}
+.stChatMessage p {
+    color: #1D1D1F !important;
+    font-size: 15px !important;
+    line-height: 1.65 !important;
+    font-weight: 400 !important;
+    letter-spacing: -0.01em !important;
+}
+
+/* ===== TASKBAR PREMIUM - APPLE + RAINBOW 1.5PX ===== */
+div[data-testid="stChatInput"] {
+    background: linear-gradient(90deg, #FF2D55, #FF9500, #FFCC00, #34C759, #007AFF, #AF52DE, #FF2D55) !important;
+    background-size: 400% 100% !important;
+    animation: premiumRainbow 8s linear infinite !important;
+    padding: 1.5px !important;
+    border-radius: 26px !important;
+    max-width: 720px !important;
+    margin: 0 auto !important;
+    bottom: 28px !important;
+    box-shadow: 
+        0 0 0 1px rgba(0,0,0,0.04),
+        0 8px 24px rgba(0,0,0,0.08),
+        0 20px 60px rgba(0,0,0,0.06) !important;
 }
 div[data-testid="stChatInput"] > div {
     background: rgba(255,255,255,0.92) !important;
-    backdrop-filter: blur(20px) !important;
-    border-radius: 22px !important;
+    backdrop-filter: blur(40px) saturate(200%) !important;
+    border-radius: 24.5px !important;
+    padding: 6px 8px 6px 20px !important;
 }
 div[data-testid="stChatInput"] textarea {
     color: #1D1D1F !important;
-    font-weight: 400 !important;
     font-size: 16px !important;
+    font-weight: 400 !important;
+    letter-spacing: -0.01em !important;
 }
-div[data-testid="stChatInput"] textarea::placeholder { color: #86868B !important; }
+div[data-testid="stChatInput"] textarea::placeholder { color: #8E8E93 !important; }
 div[data-testid="stChatInput"] button {
-    background: #1D1D1F !important;
+    background: #0A0A0B !important;
     color: white !important;
     border-radius: 50% !important;
+    width: 34px !important;
+    height: 34px !important;
+    transition: all 0.2s ease !important;
+}
+div[data-testid="stChatInput"] button:hover { transform: scale(1.05) !important; }
+
+/* PILL PREMIUM */
+.pill-premium {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 100px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+.pill-black { background: #0A0A0B !important; color: white !important; }
+.pill-white { background: white !important; color: #1D1D1F !important; border: 0.5px solid rgba(0,0,0,0.08) !important; }
+.pill-rainbow { 
+    background: linear-gradient(90deg, #FF2D55, #007AFF) !important;
+    background-size: 200% 100% !important;
+    animation: premiumRainbow 6s linear infinite !important;
+    color: white !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -160,56 +216,66 @@ if "chats" not in st.session_state:
 def get_active(): return st.session_state.chats[st.session_state.active_chat]
 
 with st.sidebar:
-    st.markdown('<span class="pill pill-r1">RAINBOW</span> <span class="pill pill-r2">WHITE</span> <span class="pill pill-white">JUAN</span>', unsafe_allow_html=True)
-    st.divider()
+    st.markdown('<div class="sidebar-brand">✦ MasterAI</div>', unsafe_allow_html=True)
+    st.markdown('<span class="pill-premium pill-black">PREMIUM</span> <span class="pill-premium pill-rainbow">RAINBOW</span>', unsafe_allow_html=True)
+    st.markdown("## ")
     if st.session_state.user_memory["nama"]:
-        st.success(f"👋 Yo {st.session_state.user_memory['nama']}!")
+        st.markdown(f"**{st.session_state.user_memory['nama']}**")
     else:
-        nama_input = st.text_input("Nama", placeholder="Nama kamu?", label_visibility="collapsed")
+        nama_input = st.text_input("Nama", placeholder="Your name", label_visibility="collapsed")
         if nama_input:
             st.session_state.user_memory["nama"] = nama_input
             st.rerun()
-    if st.button("＋ New Chat", use_container_width=True, type="primary"):
+    if st.button("＋ New conversation", use_container_width=True):
         nid = str(uuid.uuid4())
-        st.session_state.chats[nid] = {"title": "New Chat", "messages": [], "created": time.time()}
+        st.session_state.chats[nid] = {"title": "New conversation", "messages": [], "created": time.time()}
         st.session_state.active_chat = nid
         st.rerun()
-    st.caption(f"{len(st.session_state.chats)} chats")
+    st.divider()
+    st.caption(f"{len(st.session_state.chats)} conversations")
     for cid, chat in sorted(st.session_state.chats.items(), key=lambda x: x[1]["created"], reverse=True)[:10]:
-        if st.button(f"{chat['title'][:24]}", key=f"chat_{cid}", use_container_width=True):
+        if st.button(f"{chat['title'][:26]}", key=f"chat_{cid}", use_container_width=True):
             st.session_state.active_chat = cid
             st.rerun()
 
 active = get_active()
-st.markdown(f"<div class='white-rainbow-title'>{active['title']}</div><div class='white-rainbow-sub'>White Apple • Rainbow Live • by Juan Maumere</div>", unsafe_allow_html=True)
+
+# HEADER PREMIUM - CAMPURAN PUTIH + PELANGI TIPIS
+st.markdown(f"""
+<div class="premium-header">
+    <h1 class="premium-title">Siap Memulai<br><span class="premium-title-gradient">Obrolan?</span></h1>
+    <div class="premium-underline"></div>
+    <div class="premium-sub">White • Rainbow • Premium • by Juan • Maumere</div>
+</div>
+""", unsafe_allow_html=True)
 
 for m in active["messages"]:
     with st.chat_message(m["role"]):
         st.markdown(m["content"])
 
-if prompt := st.chat_input("Tanya apa saja! 👨🏼‍💻✨"):
-    if len(active["messages"]) == 0: active["title"] = prompt[:35]
+if prompt := st.chat_input("Ask anything..."):
+    if len(active["messages"]) == 0: active["title"] = prompt[:40]
     active["messages"].append({"role": "user", "content": prompt})
     with st.chat_message("user"): st.markdown(prompt)
     with st.chat_message("assistant"):
         ph = st.empty()
         ph.markdown("▌")
         try:
-            nama = st.session_state.user_memory["nama"] or "bang"
+            nama = st.session_state.user_memory["nama"] or "there"
             if any(k in prompt.lower() for k in ["siapa yang membuat", "siapa pembuat", "who made you", "dibuat siapa", "buatan siapa", "developer"]):
                 ans = DEVELOPER_INFO
                 ph.markdown(ans)
                 active["messages"].append({"role": "assistant", "content": ans})
             else:
-                system_prompt = f"Kamu MasterAI White Rainbow. Pembuat: {DEVELOPER_INFO}. User: {nama}. Clean helpful."
+                system_prompt = f"Kamu MasterAI Premium. Pembuat: {DEVELOPER_INFO}. User: {nama}. Gaya premium, concise, helpful seperti Apple Intelligence."
                 messages = [{"role": "system", "content": system_prompt}] + active["messages"]
-                res = client.chat.completions.create(model="openai/gpt-oss-120b", messages=messages, temperature=0.7, max_tokens=1500)
+                res = client.chat.completions.create(model="openai/gpt-oss-120b", messages=messages, temperature=0.6, max_tokens=1500)
                 ans = res.choices[0].message.content
                 full = ""
                 for w in ans.split(" "):
                     full += w + " "
                     ph.markdown(full + "▌")
-                    time.sleep(0.015)
+                    time.sleep(0.012)
                 ph.markdown(full)
                 active["messages"].append({"role": "assistant", "content": full})
         except Exception as e:
