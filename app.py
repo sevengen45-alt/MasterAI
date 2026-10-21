@@ -3,7 +3,7 @@ from groq import Groq
 import uuid
 import time
 
-st.set_page_config(page_title="MasterAI v10 - Ultra RGB Alive", page_icon="🔥", layout="wide")
+st.set_page_config(page_title="MasterAI v10 - Ultra RGB Alive", page_icon="⚡", layout="wide")
 
 st.markdown("""
 <style>
@@ -165,7 +165,7 @@ with st.sidebar:
     if st.session_state.user_memory["nama"]:
         st.success(f"👋 Yo {st.session_state.user_memory['nama']}!")
     else:
-        nama_input = st.text_input("Nama lu siapa bang?", placeholder="Bintang")
+        nama_input = st.text_input("Nama lu siapa bang?", placeholder="Cth: Juan")
         if nama_input:
             st.session_state.user_memory["nama"] = nama_input
             st.rerun()
@@ -197,7 +197,7 @@ if prompt := st.chat_input(f"Tanya apa {st.session_state.user_memory['nama'] or 
     with st.chat_message("user", avatar="🧑‍💻"): st.markdown(prompt)
     with st.chat_message("assistant", avatar="🔥"):
         ph = st.empty()
-        ph.markdown("▌ _Thinking!⚡ RGB ON!")
+        ph.markdown("▌ _Thinking!⚡ ")
         try:
             nama = st.session_state.user_memory["nama"] or "bang"
             system_prompt = f"Kamu MasterAI v10 Ultra RGB Alive. Nama user {nama}. Bahasa Indonesia gaul, santai, jawab jelas dan bener. Kalau matematika jelasin step by step."
