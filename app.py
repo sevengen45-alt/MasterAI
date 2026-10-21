@@ -3,7 +3,7 @@ from groq import Groq
 import uuid
 import time
 
-st.set_page_config(page_title="MasterAI v10 - Ultra RGB Alive", page_icon="🔥", layout="wide")
+st.set_page_config(page_title="MasterAI v10 - Ultra RGB Alive", page_icon="⚡", layout="wide")
 
 st.markdown("""
 <style>
