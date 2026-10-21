@@ -156,8 +156,12 @@ with col_mic:
                         response_format="json",
                         language="id"
                     )
+                    # FIX INI - LANGSUNG PINDAH KE TASKBAR!
+                    st.session_state["gemini_input"] = transcription.text
                     st.session_state["voice_transcript"] = transcription.text
                     st.success(f"✓ {transcription.text[:60]}...")
+                    time.sleep(0.5)
+                    st.rerun() # INI KUNCINYA! BIAR LANGSUNG MUNCUL DI TASKBAR!
                 except Exception as e:
                     st.error(f"{e}")
 
