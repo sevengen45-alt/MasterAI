@@ -3,103 +3,114 @@ from groq import Groq
 import uuid
 import time
 
-st.set_page_config(page_title="MasterAI v15 - Rainbow Elegan", page_icon="🌈", layout="wide")
+st.set_page_config(page_title="MasterAI v9.6 - Colorful", page_icon="🇮🇩", layout="wide")
 
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&display=swap');
 * {font-family: 'Space Grotesk', sans-serif !important;}
 
-/* ===== BACKGROUND RAINBOW - 5 WARNA TAPI KALEM, DIEM ===== */
 .stApp {
-    background: #08080A !important;
+    background: #050510 !important;
     background-image: 
-        radial-gradient(at 0% 0%, rgba(255,0,85,0.25) 0%, transparent 55%),
-        radial-gradient(at 100% 0%, rgba(255,171,0,0.2) 0%, transparent 55%),
-        radial-gradient(at 50% 50%, rgba(0,230,118,0.12) 0%, transparent 60%),
-        radial-gradient(at 0% 100%, rgba(41,121,255,0.25) 0%, transparent 55%),
-        radial-gradient(at 100% 100%, rgba(170,0,255,0.25) 0%, transparent 55%) !important;
-    background-size: 120% 120% !important;
-    animation: rainbowBgSlow 20s ease infinite alternate !important;
+        radial-gradient(at 10% 10%, rgba(255,0,128,0.3) 0%, transparent 40%),
+        radial-gradient(at 90% 20%, rgba(0,245,255,0.35) 0%, transparent 40%),
+        radial-gradient(at 50% 90%, rgba(255,215,0,0.25) 0%, transparent 50%),
+        radial-gradient(at 20% 80%, rgba(127,0,255,0.3) 0%, transparent 40%) !important;
+    animation: bgMove 10s ease infinite alternate !important;
 }
-@keyframes rainbowBgSlow {
-    0% { background-position: 0% 0%, 100% 0%, 50% 50%, 0% 100%, 100% 100%; filter: brightness(1) hue-rotate(0deg); }
-    100% { background-position: 10% 10%, 90% 10%, 55% 60%, 10% 90%, 90% 90%; filter: brightness(1.1) hue-rotate(15deg); }
+@keyframes bgMove {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(25deg); }
 }
 
-/* ===== JUDUL - RAINBOW 5 WARNA JALAN PELAN 5 DETIK, DIEM ===== */
-.live-rainbow-title {
-    background: linear-gradient(90deg, #FF0055, #FFAB00, #00E676, #2979FF, #AA00FF, #FF0055) !important;
-    background-size: 400% 100% !important;
+/* TITLE SUPER COLORFUL HIDUP */
+h1 {
+    background: linear-gradient(90deg, #FF0000, #FF8A00, #FFD600, #00FF88, #00F5FF, #7B61FF, #FF00E5, #FF0000) !important;
+    background-size: 300% 100% !important;
     -webkit-background-clip: text !important;
-    background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
-    color: transparent !important;
     text-align: center !important;
     font-weight: 900 !important;
-    font-size: 4.8rem !important;
-    letter-spacing: -0.04em !important;
-    animation: rainbowTitleSlow 5s linear infinite !important;
-    filter: drop-shadow(0 0 20px rgba(170,0,255,0.3)) !important;
-    display: block !important;
-    padding: 15px 0 !important;
+    font-size: 5rem !important;
+    animation: rainbowTitle 3s linear infinite !important;
+    filter: drop-shadow(0 0 25px rgba(255,0,229,0.6)) !important;
 }
-@keyframes rainbowTitleSlow { 
-    0% { background-position: 0% 50%; } 
-    100% { background-position: 400% 50%; } 
-}
-@media (max-width: 600px) { .live-rainbow-title { font-size: 2.8rem !important; } }
+@keyframes rainbowTitle { 0%{background-position:0%} 100%{background-position:300%} }
+@media (max-width: 600px) { h1 {font-size: 3rem !important;} }
 
-/* ===== SIDEBAR - DARK GLASS ===== */
+/* SIDEBAR COLORFUL */
 section[data-testid="stSidebar"] {
-    background: rgba(12,12,14,0.9) !important;
-    backdrop-filter: blur(24px) !important;
-    border-right: 2px solid rgba(170,0,255,0.15) !important;
+    background: linear-gradient(180deg, rgba(20,10,40,0.95), rgba(10,20,40,0.95)) !important;
+    backdrop-filter: blur(20px) !important;
+    border-right: 2px solid !important;
+    border-image: linear-gradient(180deg, #00F5FF, #7B61FF, #FF00E5) 1 !important;
 }
 
-/* ===== CHAT - DIEM ===== */
+/* CHAT BUBBLE JADI WARNA WARNI HIDUP */
 .stChatMessage {
-    background: rgba(255,255,255,0.06) !important;
-    backdrop-filter: blur(16px) !important;
-    border-radius: 18px !important;
-    border: 1px solid rgba(255,255,255,0.08) !important;
-    border-left: 3px solid #AA00FF !important;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(123,97,255,0.15)) !important;
+    backdrop-filter: blur(20px) !important;
+    border-radius: 24px !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    position: relative;
+    overflow: hidden;
 }
-.stChatMessage p { color: #F8F8FF !important; font-size: 15.5px !important; }
+.stChatMessage::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -100%; width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    animation: shimmer 3s ease infinite;
+}
+@keyframes shimmer { 0%{left:-100%} 100%{left:200%} }
 
-/* ===== BADGE - RAINBOW JALAN PELAN, DIEM ===== */
+.stChatMessage p, .stChatMessage li { color: #FFFFFF !important; font-size: 16px !important; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+.stChatMessage strong { color: #00F5FF !important; }
+.stChatMessage h2 { color: #FFD600 !important; -webkit-text-fill-color: #FFD600 !important; }
+
+/* BADGE PELANGI BERGERAK */
 .badge {
-    padding: 6px 14px; border-radius: 20px; color: white; font-weight: 800; font-size: 11px; margin: 3px; display: inline-block;
-    background-size: 300% 100% !important;
-    animation: rainbowTitleSlow 4s linear infinite !important;
+    background: linear-gradient(90deg, #FF0000, #FF8A00, #FFD600, #00FF88, #00F5FF, #7B61FF) !important;
+    background-size: 200% 100% !important;
+    animation: rainbowTitle 2s linear infinite !important;
+    padding: 5px 12px; border-radius: 20px; color: white;
+    font-size: 11px; font-weight: 800; display: inline-block; margin: 3px;
+    box-shadow: 0 0 15px rgba(123,97,255,0.6);
 }
-.b-1 { background: linear-gradient(90deg, #FF0055, #FFAB00) !important; }
-.b-2 { background: linear-gradient(90deg, #00E676, #2979FF) !important; }
-.b-3 { background: linear-gradient(90deg, #2979FF, #AA00FF) !important; }
 
-/* ===== TASKBAR - RAINBOW 5 WARNA LIVE JALAN 3 DETIK, DIEM GAK GOYANG ===== */
-div[data-testid="stChatInput"] {
-    background: linear-gradient(90deg, #FF0055, #FFAB00, #00E676, #2979FF, #AA00FF, #FF0055) !important;
-    background-size: 500% 100% !important;
-    animation: rainbowTitleSlow 3s linear infinite !important;
-    padding: 3px !important;
-    border-radius: 28px !important;
-    box-shadow: 0 0 20px rgba(170,0,255,0.35), 0 0 45px rgba(41,121,255,0.15) !important;
-}
-div[data-testid="stChatInput"] > div {
-    background: #121214 !important;
+/* INPUT TANYA - SUPER RAINBOW LIVE PALING MENCOLOK */
+[data-testid="stChatInput"] {
+    background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000) !important;
+    background-size: 400% 100% !important;
+    animation: rainbowTitle 1.5s linear infinite !important;
+    padding: 4px !important;
     border-radius: 25px !important;
+    box-shadow: 0 0 30px rgba(255,0,229,0.6), 0 0 60px rgba(0,245,255,0.4) !important;
 }
-div[data-testid="stChatInput"] textarea { color: white !important; font-weight: 600 !important; }
-div[data-testid="stChatInput"] button {
-    background: linear-gradient(135deg, #FF0055, #AA00FF) !important;
-    border-radius: 12px !important;
+[data-testid="stChatInput"] > div {
+    background: #0F0F1E !important;
+    border-radius: 21px !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+}
+[data-testid="stChatInput"] textarea { color: white !important; font-weight: 600 !important; }
+[data-testid="stChatInput"] button {
+    background: linear-gradient(90deg, #00F5FF, #FF00E5) !important;
+    background-size: 200% 100% !important;
+    animation: rainbowTitle 2s linear infinite !important;
+    border-radius: 14px !important;
+    color: white !important;
+    font-weight: bold !important;
+    box-shadow: 0 0 20px rgba(0,245,255,0.6) !important;
+}
+
+/* FIX HP BIAR GAK KEPOTONG */
+@media (max-width: 768px) {
+    [data-testid="stSidebar"] { min-width: 280px !important; }
 }
 </style>
 """, unsafe_allow_html=True)
 
-# ===== OTAK TETAP PUNYA JUAN =====
-DEVELOPER_INFO = "AI ini dibuat oleh developer bernama Jonathan Kristian Sergio Marut! Dia ADALAH seorang anak yang masih berumur 15 tahun, tetapi sudah mampu membuat AI seperti ku. Dia adalah seorang pelajar di SMAK St. Maria Monte Carmelo Maumere, dan Ia biasanya dipanggil Juan."
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
 if "user_memory" not in st.session_state:
@@ -112,8 +123,8 @@ if "chats" not in st.session_state:
 def get_active(): return st.session_state.chats[st.session_state.active_chat]
 
 with st.sidebar:
-    st.markdown("### 🌈 MASTER AI RAINBOW")
-    st.markdown('<span class="badge b-1">RAINBOW</span> <span class="badge b-2">LIVE</span> <span class="badge b-3">JUAN</span>', unsafe_allow_html=True)
+    st.markdown("### MasterAI 🦾")
+    st.markdown('<span class="badge">COLORFUL</span> <span class="badge">LIVE</span> <span class="badge">RGB</span> <span class="badge">GERAK</span>', unsafe_allow_html=True)
     st.divider()
     if st.session_state.user_memory["nama"]:
         st.success(f"👋 Yo {st.session_state.user_memory['nama']}!")
@@ -125,7 +136,7 @@ with st.sidebar:
     st.markdown("### 💬 Obrolan")
     if st.button("➕ Obrolan Baru", use_container_width=True, type="primary"):
         nid = str(uuid.uuid4())
-        st.session_state.chats[nid] = {"title": f"Chat {len(st.session_state.chats)+1}", "messages": [], "created": time.time()}
+        st.session_state.chats[nid] = {"title": f"Chat {len(st.session_state.chats)+1} ✨", "messages": [], "created": time.time()}
         st.session_state.active_chat = nid
         st.rerun()
     st.divider()
@@ -135,39 +146,35 @@ with st.sidebar:
             st.rerun()
 
 active = get_active()
-st.markdown(f"<h1 class='live-rainbow-title'>{active['title']}</h1>", unsafe_allow_html=True)
+st.title(active["title"])
 
-with st.expander("💬 Daftar Obrolan (HP Tap Sini)", expanded=False):
+# Tombol khusus HP biar gak kepotong kayak kemarin
+with st.expander("💬 Daftar Obrolan (Tap di HP)", expanded=False):
     st.write(f"Ada {len(st.session_state.chats)} obrolan")
 
 for m in active["messages"]:
     with st.chat_message(m["role"], avatar="🧑‍💻" if m["role"]=="user" else "🌈"):
         st.markdown(m["content"])
 
-if prompt := st.chat_input("Tanya apa saja! 👨🏼‍💻✨"):
+if prompt := st.chat_input(f"Tanya apa {st.session_state.user_memory['nama'] or 'saja!'} 👨🏼‍💻✨"):
     if len(active["messages"]) == 0: active["title"] = prompt[:35]
     active["messages"].append({"role": "user", "content": prompt})
     with st.chat_message("user", avatar="🧑‍💻"): st.markdown(prompt)
     with st.chat_message("assistant", avatar="🌈"):
         ph = st.empty()
-        ph.markdown("▌ _lagi mikir..._ 🌈")
+        ph.markdown("▌ _Thinking!⚡")
         try:
             nama = st.session_state.user_memory["nama"] or "bang"
-            if any(k in prompt.lower() for k in ["siapa yang membuat", "siapa pembuat", "who made you", "dibuat siapa", "buatan siapa", "developer"]):
-                ans = f"Yo {nama}! {DEVELOPER_INFO} 🌈"
-                ph.markdown(ans)
-                active["messages"].append({"role": "assistant", "content": ans})
-            else:
-                system_prompt = f"Kamu MasterAI v15 Rainbow Elegan. PEMBUAT KAMU ADALAH {DEVELOPER_INFO}. User: {nama}. Santai Jaksel."
-                messages = [{"role": "system", "content": system_prompt}] + active["messages"]
-                res = client.chat.completions.create(model="openai/gpt-oss-120b", messages=messages, temperature=0.85, max_tokens=1500)
-                ans = res.choices[0].message.content
-                full = ""
-                for w in ans.split(" "):
-                    full += w + " "
-                    ph.markdown(full + "▌")
-                    time.sleep(0.02)
-                ph.markdown(full)
-                active["messages"].append({"role": "assistant", "content": full})
+            system_prompt = f"Kamu MasterAI v9.6 Colorful. Nama user {nama}. Bahasa Indonesia gaul, super santai, colorful, jawab jelas dan bener. Kalau matematika jelasin step by step."
+            messages = [{"role": "system", "content": system_prompt}] + active["messages"]
+            res = client.chat.completions.create(model="openai/gpt-oss-120b", messages=messages, temperature=0.85, max_tokens=1500)
+            ans = res.choices[0].message.content
+            full = ""
+            for w in ans.split(" "):
+                full += w + " "
+                ph.markdown(full + "▌")
+                time.sleep(0.02)
+            ph.markdown(full)
+            active["messages"].append({"role": "assistant", "content": full})
         except Exception as e:
             ph.error(f"Error: {e}")
