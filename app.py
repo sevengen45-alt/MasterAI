@@ -3,127 +3,163 @@ from groq import Groq
 import uuid
 import time
 
-st.set_page_config(page_title="MasterAI v16 - Obsidian Gold", page_icon="🪙", layout="wide")
+st.set_page_config(page_title="MasterAI v17 - Apple White", page_icon="", layout="wide")
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
-* {font-family: 'Inter', sans-serif !important;}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap');
+* {font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;}
 
-/* BACKGROUND - HITAM PEKAT GOLD HIDUP PELAN */
+/* ===== BACKGROUND PUTIH APPLE - BERSIH BANGET ===== */
 .stApp {
-    background: #080608 !important;
-    background-image: 
-        radial-gradient(at 20% 20%, rgba(255,215,0,0.08) 0%, transparent 60%),
-        radial-gradient(at 80% 80%, rgba(255,165,0,0.06) 0%, transparent 60%) !important;
-    animation: goldBreath 8s ease infinite alternate !important;
+    background: #FBFBFD !important;
+    background-image: none !important;
 }
-@keyframes goldBreath { 0%{filter:brightness(1)} 100%{filter:brightness(1.1)} }
+.stApp::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: 
+        radial-gradient(at 15% 15%, rgba(0,122,255,0.04) 0%, transparent 50%),
+        radial-gradient(at 85% 15%, rgba(175,82,222,0.03) 0%, transparent 50%),
+        radial-gradient(at 50% 85%, rgba(0,122,255,0.02) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: -1;
+}
 
-/* JUDUL - PUTIH BERSIH GOLD GLOW, DIEM, GAK PELANGI */
-.live-title {
-    color: #FFFFFF !important;
+/* ===== JUDUL - HITAM PEKAT APPLE STYLE ===== */
+.apple-title {
+    color: #1D1D1F !important;
     text-align: center !important;
-    font-weight: 900 !important;
-    font-size: 4rem !important;
-    letter-spacing: -0.05em !important;
-    text-shadow: 0 0 30px rgba(255,215,0,0.3) !important;
+    font-weight: 800 !important;
+    font-size: 3.2rem !important;
+    letter-spacing: -0.04em !important;
+    line-height: 1.05 !important;
     display: block !important;
-    padding: 30px 0 10px 0 !important;
-    line-height: 0.9 !important;
+    padding: 40px 0 8px 0 !important;
 }
-.live-subtitle {
+.apple-subtitle {
     text-align: center !important;
-    color: rgba(255,255,255,0.4) !important;
-    font-size: 14px !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.3em !important;
-    text-transform: uppercase !important;
-    margin-bottom: 25px !important;
+    color: #86868B !important;
+    font-size: 17px !important;
+    font-weight: 400 !important;
+    margin-bottom: 30px !important;
 }
-@media (max-width: 600px) { .live-title { font-size: 2.4rem !important; } }
+@media (max-width: 600px) { .apple-title { font-size: 2rem !important; } }
 
-/* SIDEBAR - FULL HITAM MINIMALIS */
+/* ===== SIDEBAR - PUTIH ABU APPLE SIDEBAR ===== */
 section[data-testid="stSidebar"] {
-    background: #0A0A0A !important;
-    border-right: 1px solid rgba(255,255,255,0.06) !important;
+    background: #F5F5F7 !important;
+    border-right: 1px solid rgba(0,0,0,0.06) !important;
+}
+section[data-testid="stSidebar"] h3, section[data-testid="stSidebar"] h4 {
+    color: #1D1D1F !important;
 }
 section[data-testid="stSidebar"] .stButton button {
-    background: transparent !important;
-    border: 1px solid rgba(255,255,255,0.08) !important;
-    color: rgba(255,255,255,0.6) !important;
+    background: #FFFFFF !important;
+    border: 1px solid rgba(0,0,0,0.06) !important;
+    color: #1D1D1F !important;
     border-radius: 10px !important;
+    font-weight: 500 !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
     text-align: left !important;
 }
 section[data-testid="stSidebar"] .stButton button:hover {
-    background: rgba(255,215,0,0.08) !important;
-    border-color: rgba(255,215,0,0.2) !important;
-    color: #FFD700 !important;
+    background: #FFFFFF !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+    border-color: rgba(0,0,0,0.1) !important;
+}
+section[data-testid="stSidebar"] button[kind="primary"] {
+    background: #007AFF !important;
+    color: white !important;
+    border: none !important;
 }
 
-/* CHAT BUBBLE - MINIMALIS KAYA CHATGPT */
+/* ===== CHAT - APPLE MESSAGE STYLE ===== */
 .stChatMessage {
     background: transparent !important;
     border: none !important;
-    border-bottom: 1px solid rgba(255,255,255,0.05) !important;
-    border-radius: 0 !important;
-    padding: 20px 0 !important;
-}
-.stChatMessage[data-testid="stChatMessage"]:has(div[data-testid="chatAvatarIcon-user"]) {
-    background: rgba(255,255,255,0.02) !important;
-}
-.stChatMessage p { 
-    color: #E8E8E8 !important; 
-    font-size: 15px !important; 
-    line-height: 1.7 !important;
-    font-weight: 400 !important;
-}
-
-/* BADGE - GOLD MINIMALIS */
-.badge-gold {
-    background: #FFD700 !important;
-    color: #000 !important;
-    padding: 4px 10px; border-radius: 6px; font-weight: 900; font-size: 10px;
-    letter-spacing: 0.1em; margin: 2px; display: inline-block;
-}
-.badge-dark {
-    background: rgba(255,255,255,0.08) !important;
-    color: rgba(255,255,255,0.5) !important;
-    padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 10px;
-    border: 1px solid rgba(255,255,255,0.08); margin: 2px; display: inline-block;
-}
-
-/* TASKBAR - FLOATING ISLAND GOLD LIVE */
-div[data-testid="stChatInput"] {
-    background: #1A1A1A !important;
-    border: 1px solid rgba(255,215,0,0.25) !important;
-    border-radius: 20px !important;
-    padding: 6px !important;
-    box-shadow: 
-        0 0 0 1px rgba(255,215,0,0.1),
-        0 10px 40px rgba(0,0,0,0.8),
-        0 0 40px rgba(255,215,0,0.08) !important;
-    bottom: 30px !important;
-    max-width: 750px !important;
+    padding: 12px 0 !important;
+    max-width: 720px !important;
     margin: 0 auto !important;
-    animation: goldGlow 3s ease infinite alternate !important;
 }
-@keyframes goldGlow {
-    0% { border-color: rgba(255,215,0,0.25); box-shadow: 0 0 0 1px rgba(255,215,0,0.1), 0 10px 40px rgba(0,0,0,0.8), 0 0 40px rgba(255,215,0,0.08); }
-    100% { border-color: rgba(255,215,0,0.4); box-shadow: 0 0 0 1px rgba(255,215,0,0.2), 0 10px 40px rgba(0,0,0,0.8), 0 0 60px rgba(255,215,0,0.15); }
+div[data-testid="stChatMessageContent"] {
+    border-radius: 18px !important;
+    padding: 12px 16px !important;
 }
-div[data-testid="stChatInput"] > div { background: transparent !important; }
-div[data-testid="stChatInput"] textarea { 
-    color: white !important; 
-    font-weight: 400 !important;
+.stChatMessage[data-testid="stChatMessage"]:nth-child(odd) div[data-testid="stChatMessageContent"] {
+    background: #FFFFFF !important;
+    border: 1px solid rgba(0,0,0,0.06) !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+}
+.stChatMessage[data-testid="stChatMessage"]:nth-child(even) div[data-testid="stChatMessageContent"] {
+    background: transparent !important;
+}
+.stChatMessage p {
+    color: #1D1D1F !important;
     font-size: 15px !important;
+    line-height: 1.6 !important;
+    font-weight: 400 !important;
+}
+[data-testid="chatAvatarIcon-user"], [data-testid="chatAvatarIcon-assistant"] {
+    background: #E8E8ED !important;
+    color: #1D1D1F !important;
+}
+
+/* ===== BADGE - APPLE PILL ===== */
+.apple-pill {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    margin: 3px;
+}
+.pill-blue { background: #007AFF !important; color: white !important; }
+.pill-gray { background: #E8E8ED !important; color: #1D1D1F !important; }
+.pill-dark { background: #1D1D1F !important; color: white !important; }
+
+/* ===== TASKBAR - APPLE FLOATING ISLAND PUTIH ===== */
+div[data-testid="stChatInput"] {
+    background: rgba(255,255,255,0.85) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(0,0,0,0.08) !important;
+    border-radius: 24px !important;
+    padding: 8px !important;
+    box-shadow: 
+        0 1px 3px rgba(0,0,0,0.04),
+        0 8px 24px rgba(0,0,0,0.08) !important;
+    bottom: 24px !important;
+    max-width: 700px !important;
+    margin: 0 auto !important;
+    transition: all 0.3s ease !important;
+}
+div[data-testid="stChatInput"]:focus-within {
+    border-color: rgba(0,122,255,0.3) !important;
+    box-shadow: 
+        0 0 0 4px rgba(0,122,255,0.1),
+        0 8px 24px rgba(0,0,0,0.08) !important;
+}
+div[data-testid="stChatInput"] > div {
+    background: transparent !important;
+}
+div[data-testid="stChatInput"] textarea {
+    color: #1D1D1F !important;
+    font-weight: 400 !important;
+    font-size: 16px !important;
+}
+div[data-testid="stChatInput"] textarea::placeholder {
+    color: #86868B !important;
 }
 div[data-testid="stChatInput"] button {
-    background: #FFD700 !important;
-    color: black !important;
-    border-radius: 12px !important;
+    background: #1D1D1F !important;
+    color: white !important;
+    border-radius: 50% !important;
+    width: 32px !important;
+    height: 32px !important;
 }
-div[data-testid="stChatInput"] button:hover { background: #FFC400 !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -134,59 +170,58 @@ if "user_memory" not in st.session_state:
     st.session_state.user_memory = {"nama": None}
 if "chats" not in st.session_state:
     fid = str(uuid.uuid4())
-    st.session_state.chats = {fid: {"title": "Siap Memulai Obrolan!", "messages": [], "created": time.time()}}
+    st.session_state.chats = {fid: {"title": "Siap Memulai Obrolan?", "messages": [], "created": time.time()}}
     st.session_state.active_chat = fid
 
 def get_active(): return st.session_state.chats[st.session_state.active_chat]
 
 with st.sidebar:
-    st.markdown('<span class="badge-gold">OBSIDIAN GOLD</span> <span class="badge-dark">V16</span>', unsafe_allow_html=True)
-    st.markdown("#### MasterAI")
-    st.caption("Obsidian Edition by Juan")
-    st.divider()
+    st.markdown('<span class="apple-pill pill-dark"> APPLE</span> <span class="apple-pill pill-gray">V17</span> <span class="apple-pill pill-blue">JUAN</span>', unsafe_allow_html=True)
+    st.markdown("#### ")
     if st.session_state.user_memory["nama"]:
-        st.success(f"👋 Yo {st.session_state.user_memory['nama']}!")
+        st.markdown(f"**{st.session_state.user_memory['nama']}**")
     else:
-        nama_input = st.text_input("Nama lu siapa bang?", placeholder="Nama lu?")
+        nama_input = st.text_input("Nama", placeholder="Nama kamu?", label_visibility="collapsed")
         if nama_input:
             st.session_state.user_memory["nama"] = nama_input
             st.rerun()
+    st.divider()
     if st.button("＋ New Chat", use_container_width=True, type="primary"):
         nid = str(uuid.uuid4())
-        st.session_state.chats[nid] = {"title": f"Chat {len(st.session_state.chats)+1}", "messages": [], "created": time.time()}
+        st.session_state.chats[nid] = {"title": f"New Chat", "messages": [], "created": time.time()}
         st.session_state.active_chat = nid
         st.rerun()
-    st.divider()
-    st.caption(f"{len(st.session_state.chats)} conversations")
-    for cid, chat in sorted(st.session_state.chats.items(), key=lambda x: x[1]["created"], reverse=True)[:15]:
-        if st.button(f"{chat['title'][:26]}", key=f"chat_{cid}", use_container_width=True):
+    st.markdown(" ")
+    st.caption("Recent")
+    for cid, chat in sorted(st.session_state.chats.items(), key=lambda x: x[1]["created"], reverse=True)[:10]:
+        if st.button(f"{chat['title'][:24]}", key=f"chat_{cid}", use_container_width=True):
             st.session_state.active_chat = cid
             st.rerun()
 
 active = get_active()
-st.markdown(f"<div class='live-title'>{active['title']}</div><div class='live-subtitle'>OBSIDIAN • GOLD • BY JUAN</div>", unsafe_allow_html=True)
+st.markdown(f"<div class='apple-title'>{active['title']}</div><div class='apple-subtitle'>Apple Intelligence • by Juan • Maumere</div>", unsafe_allow_html=True)
 
 for m in active["messages"]:
-    with st.chat_message(m["role"], avatar="●" if m["role"]=="user" else "◍"):
+    with st.chat_message(m["role"]):
         st.markdown(m["content"])
 
-if prompt := st.chat_input("Tanya apa saja..."):
-    if len(active["messages"]) == 0: active["title"] = prompt[:35]
+if prompt := st.chat_input("Ask anything..."):
+    if len(active["messages"]) == 0: active["title"] = prompt[:40]
     active["messages"].append({"role": "user", "content": prompt})
-    with st.chat_message("user", avatar="●"): st.markdown(prompt)
-    with st.chat_message("assistant", avatar="◍"):
+    with st.chat_message("user"): st.markdown(prompt)
+    with st.chat_message("assistant"):
         ph = st.empty()
         ph.markdown("▌")
         try:
-            nama = st.session_state.user_memory["nama"] or "bang"
+            nama = st.session_state.user_memory["nama"] or ""
             if any(k in prompt.lower() for k in ["siapa yang membuat", "siapa pembuat", "who made you", "dibuat siapa", "buatan siapa", "developer"]):
-                ans = f"{DEVELOPER_INFO}"
+                ans = DEVELOPER_INFO
                 ph.markdown(ans)
                 active["messages"].append({"role": "assistant", "content": ans})
             else:
-                system_prompt = f"Kamu MasterAI v16 Obsidian Gold. PEMBUAT KAMU ADALAH {DEVELOPER_INFO}. User: {nama}. Jawab elegan, minimalis, pro."
+                system_prompt = f"Kamu MasterAI Apple Edition. Pembuat: {DEVELOPER_INFO}. User: {nama}. Gaya Apple: clean, helpful, minimalis."
                 messages = [{"role": "system", "content": system_prompt}] + active["messages"]
-                res = client.chat.completions.create(model="openai/gpt-oss-120b", messages=messages, temperature=0.8, max_tokens=1500)
+                res = client.chat.completions.create(model="openai/gpt-oss-120b", messages=messages, temperature=0.7, max_tokens=1500)
                 ans = res.choices[0].message.content
                 full = ""
                 for w in ans.split(" "):
