@@ -3,7 +3,7 @@ from groq import Groq
 import uuid
 import time
 
-st.set_page_config(page_title="MasterAI v9.6 - Colorful", page_icon="🌈", layout="wide")
+st.set_page_config(page_title="MasterAI v9.6 - Colorful", page_icon="🇮🇩", layout="wide")
 
 st.markdown("""
 <style>
@@ -123,7 +123,7 @@ if "chats" not in st.session_state:
 def get_active(): return st.session_state.chats[st.session_state.active_chat]
 
 with st.sidebar:
-    st.markdown("### 🌈 MASTER AI v9.6")
+    st.markdown("### MasterAI 🦾")
     st.markdown('<span class="badge">COLORFUL</span> <span class="badge">LIVE</span> <span class="badge">RGB</span> <span class="badge">GERAK</span>', unsafe_allow_html=True)
     st.divider()
     if st.session_state.user_memory["nama"]:
@@ -156,16 +156,16 @@ for m in active["messages"]:
     with st.chat_message(m["role"], avatar="🧑‍💻" if m["role"]=="user" else "🌈"):
         st.markdown(m["content"])
 
-if prompt := st.chat_input(f"Tanya apa {st.session_state.user_memory['nama'] or 'saja!'} 🌈✨"):
+if prompt := st.chat_input(f"Tanya apa {st.session_state.user_memory['nama'] or 'saja!'} 👨🏼‍💻✨"):
     if len(active["messages"]) == 0: active["title"] = prompt[:35]
     active["messages"].append({"role": "user", "content": prompt})
     with st.chat_message("user", avatar="🧑‍💻"): st.markdown(prompt)
     with st.chat_message("assistant", avatar="🌈"):
         ph = st.empty()
-        ph.markdown("▌ _lagi mikir warna-warni..._ 🌈")
+        ph.markdown("▌ _Thinking!⚡")
         try:
             nama = st.session_state.user_memory["nama"] or "bang"
-            system_prompt = f"Kamu MasterAI v9.6 Colorful. Nama user {nama}. Bahasa Indonesia gaul Jaksel, super santai, colorful, jawab jelas dan bener. Kalau matematika jelasin step by step."
+            system_prompt = f"Kamu MasterAI v9.6 Colorful. Nama user {nama}. Bahasa Indonesia gaul, super santai, colorful, jawab jelas dan bener. Kalau matematika jelasin step by step."
             messages = [{"role": "system", "content": system_prompt}] + active["messages"]
             res = client.chat.completions.create(model="openai/gpt-oss-120b", messages=messages, temperature=0.85, max_tokens=1500)
             ans = res.choices[0].message.content
