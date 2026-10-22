@@ -2,7 +2,7 @@ import streamlit as st
 from groq import Groq
 import uuid, time
 
-st.set_page_config(page_title="MasterAI v11.4 - No Kepotong", page_icon="🌈", layout="wide")
+st.set_page_config(page_title="MasterAI v11.4 - No Kepotong", page_icon="⚡", layout="wide")
 
 DEVELOPER_INFO = "AI ini dibuat oleh developer bernama Jonathan Kristian Sergio Marut! Dia ADALAH seorang anak yang masih berumur 15 tahun, tetapi sudah mampu membuat AI seperti ku. Dia adalah seorang pelajar di SMAK St. Maria Monte Carmelo Maumere, dan Ia biasanya dipanggil Juan."
 
@@ -16,7 +16,7 @@ from groq import Groq
 import uuid
 import time
 
-st.set_page_config(page_title="MasterAI v11.3 - Save Name", page_icon="🌈", layout="wide")
+st.set_page_config(page_title="MasterAI v11.3 - Save Name", page_icon="⚡", layout="wide")
 
 # ===== CONFIG DEVELOPER - INI YANG BIKIN GAK BISA DIBAJAK =====
 DEVELOPER_INFO = "AI ini dibuat oleh developer bernama Jonathan Kristian Sergio Marut! Dia ADALAH seorang anak yang masih berumur 15 tahun, tetapi sudah mampu membuat AI seperti ku. Dia adalah seorang pelajar di SMAK St. Maria Monte Carmelo Maumere, dan Ia biasanya dipanggil Juan."
@@ -81,7 +81,7 @@ if "chats" not in st.session_state:
 def get_active(): return st.session_state.chats[st.session_state.active_chat]
 
 with st.sidebar:
-    st.markdown("### ✨ MasterAI")
+    st.markdown("###  MasterAI 🇮🇩")
     st.markdown('<span class="badge-alive">SAVE NAME</span> <span class="badge-alive">GAUL</span>', unsafe_allow_html=True)
     st.divider()
     # SAVE NAMA USER DI SINI!
@@ -112,7 +112,7 @@ if len(active["messages"]) == 0:
     <div style="text-align:center; padding: 50px 20px 10px 20px; max-width:720px; margin:0 auto;">
         <h1>Yo {st.session_state.user_memory['nama'] or 'Bang'}, Mau<br><span class="rainbow-alive">Ngobrolin Apa?</span></h1>
         <div class="gemini-line"></div>
-        <p style="color:#5F6368 !important; font-size:16px; margin-top:20px;">Gas tanya apa pun, gue inget nama lu kok! 😎✨</p>
+        <p style="color:#5F6368 !important; font-size:16px; margin-top:20px;">Gas tanya apa pun, aku siap bantu kok! 😎✨</p>
     </div>
     """, unsafe_allow_html=True)
 else:
@@ -122,13 +122,13 @@ for m in active["messages"]:
     with st.chat_message(m["role"], avatar="😎" if m["role"]=="user" else "🌈"):
         st.markdown(m["content"])
 
-if prompt := st.chat_input(f"Gas tanya apa {st.session_state.user_memory['nama'] or 'bang'}? 😎"):
+if prompt := st.chat_input(f"Mau tanya? {st.session_state.user_memory['nama'] or 'Silahkan!'} 😎"):
     if len(active["messages"]) == 0: active["title"] = prompt[:35]
     active["messages"].append({"role": "user", "content": prompt})
     with st.chat_message("user", avatar="😎"): st.markdown(prompt)
     with st.chat_message("assistant", avatar="🌈"):
         ph = st.empty()
-        ph.markdown("🌈 _Otw mikir dulu ya..._")
+        ph.markdown("Thinking! 🦾")
         try:
             # ===== ANTI BAJAK - DETEKSI PERTANYAAN SIAPA PEMBUAT =====
             lower_prompt = prompt.lower()
@@ -141,7 +141,7 @@ if prompt := st.chat_input(f"Gas tanya apa {st.session_state.user_memory['nama']
             
             if is_ask_developer:
                 # JAWAB LANGSUNG TANPA PANGGIL GROQ - ANTI DIBAJAK!
-                ans = DEVELOPER_INFO + f" Btw, lu kan {st.session_state.user_memory['nama'] or 'bang'}, salam kenal ya! 😎"
+                ans = DEVELOPER_INFO + f" Btw, lu kan {st.session_state.user_memory['nama'] or 'bang'}, 😎"
                 ph.markdown(ans)
                 active["messages"].append({"role": "assistant", "content": ans})
             else:
