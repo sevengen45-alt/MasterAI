@@ -115,7 +115,7 @@ if prompt := st.chat_input(f"Gas tanya apa {st.session_state.user_memory['nama']
     with st.chat_message("user", avatar="😎"): st.markdown(prompt)
     with st.chat_message("assistant", avatar="🌈"):
         ph = st.empty()
-        ph.markdown("🌈 _Otw mikir dulu ya..._")
+        ph.markdown("Thinking ⚡")
         try:
             # ===== ANTI BAJAK - DETEKSI PERTANYAAN SIAPA PEMBUAT =====
             lower_prompt = prompt.lower()
