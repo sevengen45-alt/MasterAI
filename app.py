@@ -68,7 +68,7 @@ if "chats" not in st.session_state:
 def get_active(): return st.session_state.chats[st.session_state.active_chat]
 
 with st.sidebar:
-    st.markdown("###  MasterAI")
+    st.markdown("### ✨ MasterAI")
     st.markdown('<span class="badge-alive">SAVE NAME</span> <span class="badge-alive">GAUL</span>', unsafe_allow_html=True)
     st.divider()
     # SAVE NAMA USER DI SINI!
