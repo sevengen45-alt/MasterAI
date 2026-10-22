@@ -3,7 +3,7 @@ from groq import Groq
 import uuid
 import time
 
-st.set_page_config(page_title="MasterAI v11.3 - Save Name", page_icon="🌈", layout="wide")
+st.set_page_config(page_title="MasterAI v11.3 - Save Name", page_icon="🇮🇩", layout="wide")
 
 # ===== CONFIG DEVELOPER - INI YANG BIKIN GAK BISA DIBAJAK =====
 DEVELOPER_INFO = "AI ini dibuat oleh developer bernama Jonathan Kristian Sergio Marut! Dia ADALAH seorang anak yang masih berumur 15 tahun, tetapi sudah mampu membuat AI seperti ku. Dia adalah seorang pelajar di SMAK St. Maria Monte Carmelo Maumere, dan Ia biasanya dipanggil Juan."
@@ -68,7 +68,7 @@ if "chats" not in st.session_state:
 def get_active(): return st.session_state.chats[st.session_state.active_chat]
 
 with st.sidebar:
-    st.markdown("### ✨ MasterAI")
+    st.markdown("###  MasterAI")
     st.markdown('<span class="badge-alive">SAVE NAME</span> <span class="badge-alive">GAUL</span>', unsafe_allow_html=True)
     st.divider()
     # SAVE NAMA USER DI SINI!
