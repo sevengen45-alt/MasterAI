@@ -1,17 +1,71 @@
 import streamlit as st
 from groq import Groq
-import uuid
-import time
+import uuid, time
 
-st.set_page_config(page_title="MasterAI v11.3 - Save Name", page_icon="🇮🇩", layout="wide")
+st.set_page_config(page_title="MasterAI v11.4 - No Kepotong", page_icon="🌈", layout="wide")
 
-# ===== CONFIG DEVELOPER - INI YANG BIKIN GAK BISA DIBAJAK =====
 DEVELOPER_INFO = "AI ini dibuat oleh developer bernama Jonathan Kristian Sergio Marut! Dia ADALAH seorang anak yang masih berumur 15 tahun, tetapi sudah mampu membuat AI seperti ku. Dia adalah seorang pelajar di SMAK St. Maria Monte Carmelo Maumere, dan Ia biasanya dipanggil Juan."
 
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@500;700&display=swap');
 * { font-family: 'Google Sans', Inter, sans-serif !important; }
+
+/* ===== FIX UTAMA ANTI KEPOTONG HP ===== */
+html, body, .stApp {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+}
+[data-testid="stAppViewContainer"] {
+    padding: 1rem 0.8rem 6rem 0.8rem !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+/* Bikin semua teks gak maksa lebar */
+p, li, div, span, h1, h2, h3 {
+    word-wrap: break-word !important;
+    overflow-wrap: anywhere !important;
+    max-width: 100% !important;
+}
+/* INI KUNCI - TABEL AUTO SCROLL DI HP */
+table {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    white-space: normal !important;
+    border-collapse: collapse !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+th, td {
+    white-space: normal !important;
+    word-break: break-word !important;
+    min-width: 80px !important;
+    padding: 8px 10px !important;
+    font-size: 14px !important;
+}
+/* Chat bubble di HP full width */
+@media (max-width: 768px) {
+    .stChatMessage {
+        max-width: 100% !important;
+        margin: 10px 0 !important;
+        border-radius: 16px !important;
+    }
+    h1 { font-size: 2.2rem !important; }
+    table { font-size: 13px !important; }
+    [data-testid="stChatInput"] {
+        max-width: 96% !important;
+        margin-bottom: 10px !important;
+        position: fixed !important;
+        bottom: 12px !important;
+        left: 2% !important;
+        right: 2% !important;
+        z-index: 999 !important;
+    }
+}
+/* ===== END FIX ANTI KEPOTONG ===== */
+
+/* UI PUTIH PELANGI ALIVE LU YANG KEMARIN */
 .stApp { background: #FFFFFF !important; }
 .stApp::before {
     content: ""; position: fixed; inset: -40%;
@@ -23,8 +77,6 @@ st.markdown("""
     animation: orbAlive 16s ease-in-out infinite alternate; filter: blur(18px); z-index: 0; pointer-events: none;
 }
 @keyframes orbAlive { 0%{transform: translate(0,0) scale(1)} 50%{transform: translate(-3%,3%) scale(1.08)} 100%{transform: translate(3%,-2%) scale(1.02)} }
-[data-testid="stAppViewContainer"] { position: relative; z-index: 1; background: transparent !important; }
-p, div, span { color: #202124 !important; }
 h1 { text-align: center !important; font-weight: 500 !important; font-size: 3.4rem !important; line-height: 1.05 !important; color: #202124 !important; -webkit-text-fill-color: #202124 !important; }
 h1 .rainbow-alive {
     background: linear-gradient(90deg, #4285F4, #9C27B0, #DB4437, #F4B400, #0F9D58, #4285F4) !important;
@@ -36,10 +88,8 @@ h1 .rainbow-alive {
 @keyframes floatAlive { 0%{transform: translateY(0)} 100%{transform: translateY(-6px)} }
 .gemini-line { width: 120px; height: 4px; margin: 18px auto 0 auto; background: linear-gradient(90deg, #4285F4, #9C27B0, #DB4437, #F4B400, #0F9D58, #4285F4); background-size: 300% 100%; animation: rainbowRun 2s linear infinite; border-radius: 100px; }
 section[data-testid="stSidebar"] { background: #F8F9FA !important; border-right: 1px solid #E8EAED !important; }
-section[data-testid="stSidebar"] * { color: #202124 !important; }
 .badge-alive { background: linear-gradient(90deg, #4285F4, #9C27B0, #DB4437, #F4B400, #0F9D58, #4285F4) !important; background-size: 300% 100% !important; animation: rainbowRun 2s linear infinite !important; color: white !important; padding: 6px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; display: inline-block; margin: 3px; }
-.stChatMessage { background: #FFFFFF !important; border: 1px solid #E8EAED !important; border-radius: 22px !important; box-shadow: 0 1px 8px rgba(0,0,0,0.04) !important; max-width: 720px !important; margin: 14px auto !important; position: relative; overflow: hidden; animation: popAlive 0.5s cubic-bezier(0.16,1,0.3,1) !important; }
-@keyframes popAlive { 0%{opacity:0; transform: translateY(10px) scale(0.98)} 100%{opacity:1; transform: translateY(0) scale(1)} }
+.stChatMessage { background: #FFFFFF !important; border: 1px solid #E8EAED !important; border-radius: 22px !important; box-shadow: 0 1px 8px rgba(0,0,0,0.04) !important; max-width: 720px !important; margin: 14px auto !important; position: relative; overflow: hidden; }
 .stChatMessage::after { content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, #4285F4, #9C27B0, #DB4437, #F4B400, #0F9D58, #4285F4); background-size: 300% 100%; animation: rainbowRun 2s linear infinite; opacity: 0; transition: opacity 0.3s; }
 .stChatMessage:hover::after { opacity: 1; }
 .stChatMessage p { color: #202124 !important; font-size: 15.5px !important; line-height: 1.65 !important; }
@@ -57,7 +107,6 @@ section[data-testid="stSidebar"] * { color: #202124 !important; }
 
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
-# ===== SAVE MEMORY =====
 if "user_memory" not in st.session_state:
     st.session_state.user_memory = {"nama": None}
 if "chats" not in st.session_state:
@@ -69,12 +118,10 @@ def get_active(): return st.session_state.chats[st.session_state.active_chat]
 
 with st.sidebar:
     st.markdown("### ✨ MasterAI")
-    st.markdown('<span class="badge-alive">SAVE NAME</span> <span class="badge-alive">GAUL</span>', unsafe_allow_html=True)
+    st.markdown('<span class="badge-alive">NO KEPOTONG</span> <span class="badge-alive">HP READY</span>', unsafe_allow_html=True)
     st.divider()
-    # SAVE NAMA USER DI SINI!
     if st.session_state.user_memory["nama"]:
         st.success(f"Yo {st.session_state.user_memory['nama']}! 😎")
-        st.caption(f"Developer: Juan Maumere")
     else:
         nama = st.text_input("Eh nama lu siapa?", placeholder="Panggil aja...")
         if nama:
@@ -99,53 +146,31 @@ if len(active["messages"]) == 0:
     <div style="text-align:center; padding: 50px 20px 10px 20px; max-width:720px; margin:0 auto;">
         <h1>Yo {st.session_state.user_memory['nama'] or 'Bang'}, Mau<br><span class="rainbow-alive">Ngobrolin Apa?</span></h1>
         <div class="gemini-line"></div>
-        <p style="color:#5F6368 !important; font-size:16px; margin-top:20px;">Gas tanya apa pun, aku siap bantu kok! 😎✨</p>
+        <p style="color:#5F6368 !important; font-size:16px; margin-top:20px;">Udah anti kepotong di HP bang! 😎✨</p>
     </div>
     """, unsafe_allow_html=True)
-else:
-    st.markdown(f"<h2 style='text-align:center; color:#202124;'>{active['title']}</h2>", unsafe_allow_html=True)
 
 for m in active["messages"]:
     with st.chat_message(m["role"], avatar="😎" if m["role"]=="user" else "🌈"):
         st.markdown(m["content"])
 
-if prompt := st.chat_input(f"Mau tanya? {st.session_state.user_memory['nama'] or 'Silahkan!'} 😎🔥"):
+if prompt := st.chat_input(f"Gas tanya apa {st.session_state.user_memory['nama'] or 'bang'}? 😎"):
     if len(active["messages"]) == 0: active["title"] = prompt[:35]
     active["messages"].append({"role": "user", "content": prompt})
     with st.chat_message("user", avatar="😎"): st.markdown(prompt)
     with st.chat_message("assistant", avatar="🌈"):
         ph = st.empty()
-        ph.markdown("Thinking! ⚡")
+        ph.markdown("🌈 _Otw mikir dulu ya..._")
         try:
-            # ===== ANTI BAJAK - DETEKSI PERTANYAAN SIAPA PEMBUAT =====
             lower_prompt = prompt.lower()
-            is_ask_developer = any(k in lower_prompt for k in [
-                "siapa yang membuat", "siapa pembuat", "siapa yg membuat", "siapa yg buat",
-                "who made you", "who created you", "dibuat siapa", "buatan siapa",
-                "siapa developer", "siapa yang bikin", "kamu dibuat siapa",
-                "kamu buatan siapa", "siapa pencipta"
-            ])
-            
+            is_ask_developer = any(k in lower_prompt for k in ["siapa yang membuat","siapa pembuat","siapa yg buat","who made you","dibuat siapa","buatan siapa","siapa developer","siapa yang bikin"])
             if is_ask_developer:
-                # JAWAB LANGSUNG TANPA PANGGIL GROQ - ANTI DIBAJAK!
-                ans = DEVELOPER_INFO + f" Btw, lu kan {st.session_state.user_memory['nama'] or 'bang'}, ? 😎"
+                ans = DEVELOPER_INFO
                 ph.markdown(ans)
                 active["messages"].append({"role": "assistant", "content": ans})
             else:
-                # JAWAB BIASA PAKE GROQ TAPI GAUL
                 nama = st.session_state.user_memory["nama"] or "bang"
-                system_prompt = f"""
-                Kamu MasterAI v11.3, {DEVELOPER_INFO}
-                User namanya {nama}. Panggil dia {nama} sesekali biar personal!
-                
-                GAYA BAHASA: GAUL SANTAI - pake "yo", "gas", "wkwk", "bang", "bro", "santuy", jangan kaku!
-                Contoh: "Gas bang {nama}, gue bantuin!" bukan "Saya akan membantu Anda"
-                
-                ATURAN PENTING:
-                - Kalo ada yang nanya siapa pembuat/pencipta/developer kamu, JAWAB: "{DEVELOPER_INFO}"
-                - Jangan pernah ngaku buatan OpenAI, Meta, Google, dll. Kamu buatan Juan!
-                - Tetep jawab akurat tapi gaya gaul!
-                """
+                system_prompt = f"Kamu MasterAI, {DEVELOPER_INFO} User {nama}. Gaya gaul santai, jangan kaku!"
                 messages = [{"role": "system", "content": system_prompt}] + active["messages"]
                 res = client.chat.completions.create(model="openai/gpt-oss-120b", messages=messages, temperature=0.9, max_tokens=1500)
                 ans = res.choices[0].message.content
@@ -157,4 +182,4 @@ if prompt := st.chat_input(f"Mau tanya? {st.session_state.user_memory['nama'] or
                 ph.markdown(full)
                 active["messages"].append({"role": "assistant", "content": full})
         except Exception as e:
-            ph.error(f"Waduh error bang: {e} 😅")
+            ph.error(f"Waduh error: {e}")
