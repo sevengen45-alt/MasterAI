@@ -99,7 +99,7 @@ if len(active["messages"]) == 0:
     <div style="text-align:center; padding: 50px 20px 10px 20px; max-width:720px; margin:0 auto;">
         <h1>Yo {st.session_state.user_memory['nama'] or 'Bang'}, Mau<br><span class="rainbow-alive">Ngobrolin Apa?</span></h1>
         <div class="gemini-line"></div>
-        <p style="color:#5F6368 !important; font-size:16px; margin-top:20px;">Gas tanya apa pun, gue inget nama lu kok! 😎✨</p>
+        <p style="color:#5F6368 !important; font-size:16px; margin-top:20px;">Gas tanya apa pun, aku siap bantu kok! 😎✨</p>
     </div>
     """, unsafe_allow_html=True)
 else:
@@ -109,7 +109,7 @@ for m in active["messages"]:
     with st.chat_message(m["role"], avatar="😎" if m["role"]=="user" else "🌈"):
         st.markdown(m["content"])
 
-if prompt := st.chat_input(f"Gas tanya apa {st.session_state.user_memory['nama'] or 'bang'}? 😎"):
+if prompt := st.chat_input(f"Mau tanya? {st.session_state.user_memory['nama'] or 'Silahkan'}!"):
     if len(active["messages"]) == 0: active["title"] = prompt[:35]
     active["messages"].append({"role": "user", "content": prompt})
     with st.chat_message("user", avatar="🗿😎"): st.markdown(prompt)
