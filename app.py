@@ -106,14 +106,14 @@ else:
     st.markdown(f"<h2 style='text-align:center; color:#202124;'>{active['title']}</h2>", unsafe_allow_html=True)
 
 for m in active["messages"]:
-    with st.chat_message(m["role"], avatar="😎" if m["role"]=="user" else "👨🏼‍💻🇮🇩"):
+    with st.chat_message(m["role"], avatar="😎" if m["role"]=="user" else "🌈"):
         st.markdown(m["content"])
 
 if prompt := st.chat_input(f"Mau tanya? Silahkan! {st.session_state.user_memory['nama'] or ''}."):
     if len(active["messages"]) == 0: active["title"] = prompt[:35]
     active["messages"].append({"role": "user", "content": prompt})
     with st.chat_message("user", avatar="😎"): st.markdown(prompt)
-    with st.chat_message("assistant", avatar="🌈"):
+    with st.chat_message("assistant", avatar="👨🏼‍💻🇮🇩"):
         ph = st.empty()
         ph.markdown("Thinking! 🦾")
         try:
