@@ -128,7 +128,7 @@ if prompt := st.chat_input(f"Mau tanya? {st.session_state.user_memory['nama'] or
             
             if is_ask_developer:
                 # JAWAB LANGSUNG TANPA PANGGIL GROQ - ANTI DIBAJAK!
-                ans = DEVELOPER_INFO + f" Btw, lu kah {st.session_state.user_memory['nama'] or 'bang?'},😎"
+                ans = DEVELOPER_INFO + f" Btw, lu kah {st.session_state.user_memory['nama'] or 'bang?'}😎"
                 ph.markdown(ans)
                 active["messages"].append({"role": "assistant", "content": ans})
             else:
