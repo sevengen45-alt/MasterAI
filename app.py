@@ -109,7 +109,7 @@ for m in active["messages"]:
     with st.chat_message(m["role"], avatar="😎" if m["role"]=="user" else "👨🏼‍💻🇮🇩"):
         st.markdown(m["content"])
 
-if prompt := st.chat_input(f"Mau tanya? {st.session_state.user_memory['nama'] or 'Silahkan'}!"):
+if prompt := st.chat_input(f"Mau tanya? Silahkan {st.session_state.user_memory['nama'] or ''}!"):
     if len(active["messages"]) == 0: active["title"] = prompt[:35]
     active["messages"].append({"role": "user", "content": prompt})
     with st.chat_message("user", avatar="😎"): st.markdown(prompt)
