@@ -5,10 +5,8 @@ import time
 
 st.set_page_config(page_title="MasterAI v11.3 - Save Name", page_icon="⚡", layout="wide")
 
-# ===== CONFIG DEVELOPER - INI YANG BIKIN GAK BISA DIBAJAK =====
 DEVELOPER_INFO = "AI ini dibuat oleh developer bernama Jonathan Kristian Sergio Marut! Dia ADALAH seorang anak yang masih berumur 15 tahun, tetapi sudah mampu membuat AI seperti ku. Dia adalah seorang pelajar di SMAK St. Maria Monte Carmelo Maumere, dan Ia biasanya dipanggil Juan."
 
-# ===== UI WHITE-RAINBOW ALIVE =====
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap');
@@ -19,66 +17,114 @@ html, body, .stApp { overflow-x: hidden !important; max-width: 100vw !important;
 [data-testid="stAppViewContainer"] { padding: 1rem 1rem 7rem 1rem !important; max-width: 100% !important; overflow-x: hidden !important; }
 p, li, div, h1, h2, h3 { word-wrap: break-word !important; overflow-wrap: anywhere !important; max-width: 100% !important; }
 table { display: block !important; width: 100% !important; max-width: 100% !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; border-collapse: collapse !important; }
-th, td { white-space: normal !important; word-break: break-word !important; min-width: 70px !important; padding: 8px 10px !important; font-size: 14px !important; }
+th, td { white-space: normal !important; word-break: break-word !important; min-width: 70px !important; padding: 8px 10px !important; }
 
-/* BACKGROUND PUTIH + ORB PELANGI ALIVE */
-.stApp { background: #FFFFFF !important; }
+/* ===== WHITE BASE + SUPER HEBOH ORB ===== */
+.stApp { background: #FFFFFF !important; overflow: hidden; }
 .stApp::before {
-    content: ""; position: fixed; inset: -40%;
+    content: ""; position: fixed; inset: -60%;
     background: 
-        radial-gradient(ellipse 700px 600px at 12% 8%, rgba(66,133,244,0.14) 0%, transparent 60%),
-        radial-gradient(ellipse 600px 500px at 88% 12%, rgba(219,68,55,0.10) 0%, transparent 60%),
-        radial-gradient(ellipse 900px 600px at 50% 115%, rgba(15,157,88,0.10) 0%, transparent 60%),
-        radial-gradient(ellipse 600px 500px at 18% 88%, rgba(244,180,0,0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 500px 400px at 92% 85%, rgba(156,39,176,0.09) 0%, transparent 60%);
-    animation: orbAlive 18s ease-in-out infinite alternate; filter: blur(20px); z-index: 0; pointer-events: none;
+        radial-gradient(ellipse 850px 700px at 10% 10%, rgba(66,133,244,0.18) 0%, transparent 55%),
+        radial-gradient(ellipse 750px 600px at 90% 15%, rgba(219,68,55,0.14) 0%, transparent 55%),
+        radial-gradient(ellipse 1000px 700px at 50% 120%, rgba(15,157,88,0.13) 0%, transparent 60%),
+        radial-gradient(ellipse 700px 600px at 15% 85%, rgba(244,180,0,0.16) 0%, transparent 55%),
+        radial-gradient(ellipse 650px 500px at 90% 80%, rgba(156,39,176,0.13) 0%, transparent 55%),
+        radial-gradient(ellipse 500px 400px at 50% 50%, rgba(66,133,244,0.06) 0%, transparent 70%);
+    animation: superOrb 12s ease-in-out infinite alternate; filter: blur(22px); z-index: 0; pointer-events: none;
 }
-@keyframes orbAlive { 0%{transform: translate(0,0) scale(1)} 50%{transform: translate(-2.5%,2.5%) scale(1.07)} 100%{transform: translate(2%,-1.5%) scale(1.03)} }
+@keyframes superOrb {
+    0% { transform: translate(0,0) scale(1) rotate(0deg); filter: blur(22px) hue-rotate(0deg); }
+    33% { transform: translate(-4%,5%) scale(1.15) rotate(2deg); filter: blur(26px) hue-rotate(10deg); }
+    66% { transform: translate(4%,-3%) scale(0.95) rotate(-2deg); filter: blur(20px) hue-rotate(-10deg); }
+    100% { transform: translate(-2%,-4%) scale(1.08) rotate(1deg); filter: blur(24px) hue-rotate(5deg); }
+}
 [data-testid="stAppViewContainer"] { position: relative; z-index: 1; background: transparent !important; }
+
+/* PARTIKEL PELANGI MELAYANG */
+.stApp::after {
+    content: "🌈 ✨ 🔵 🔴 🟡 🟢 🟣"; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    font-size: 18px; letter-spacing: 120px; line-height: 180px; white-space: pre-wrap;
+    opacity: 0.04; animation: floatParticle 25s linear infinite; pointer-events: none; z-index: 0;
+}
+@keyframes floatParticle { 0%{transform: translateY(100vh)} 100%{transform: translateY(-100vh)} }
+
 p, div, span { color: #202124 !important; }
 
-/* JUDUL RAINBOW ALIVE */
-h1 { text-align: center !important; font-weight: 400 !important; font-size: 3.4rem !important; line-height: 1.08 !important; color: #202124 !important; -webkit-text-fill-color: #202124 !important; letter-spacing: -0.02em !important; }
+/* ===== JUDUL SUPER HEBOH ===== */
+h1 { text-align: center !important; font-weight: 400 !important; font-size: 3.6rem !important; line-height: 1.05 !important; color: #202124 !important; -webkit-text-fill-color: #202124 !important; }
 h1 .rainbow-alive {
-    background: linear-gradient(90deg, #4285F4, #9C27B0, #DB4437, #F4B400, #0F9D58, #4285F4) !important;
-    background-size: 300% 100% !important; -webkit-background-clip: text !important; background-clip: text !important;
-    -webkit-text-fill-color: transparent !important; animation: rainbowRun 2.8s linear infinite, floatAlive 3s ease-in-out infinite alternate !important;
-    font-weight: 700 !important; display: inline-block;
+    background: linear-gradient(90deg, #4285F4, #EA4335, #FBBC05, #34A853, #9C27B0, #4285F4, #EA4335, #FBBC05) !important;
+    background-size: 400% 100% !important; -webkit-background-clip: text !important; background-clip: text !important;
+    -webkit-text-fill-color: transparent !important; 
+    animation: rainbowSuper 1.8s linear infinite, floatSuper 2s ease-in-out infinite alternate, glowRainbow 2s ease-in-out infinite alternate !important;
+    font-weight: 800 !important; display: inline-block;
 }
-@keyframes rainbowRun { 0%{background-position:0% 50%} 100%{background-position:300% 50%} }
-@keyframes floatAlive { 0%{transform: translateY(0)} 100%{transform: translateY(-5px)} }
-.gemini-line { width: 110px; height: 4px; margin: 20px auto 0 auto; background: linear-gradient(90deg, #4285F4, #9C27B0, #DB4437, #F4B400, #0F9D58, #4285F4); background-size: 300% 100%; animation: rainbowRun 2s linear infinite; border-radius: 100px; box-shadow: 0 2px 12px rgba(66,133,244,0.25); }
+@keyframes rainbowSuper { 0%{background-position:0% 50%} 100%{background-position:400% 50%} }
+@keyframes floatSuper { 0%{transform: translateY(0) rotate(0deg)} 50%{transform: translateY(-8px) rotate(0.5deg)} 100%{transform: translateY(-4px) rotate(-0.5deg)} }
+@keyframes glowRainbow { 0%{filter: drop-shadow(0 2px 8px rgba(66,133,244,0.3))} 100%{filter: drop-shadow(0 6px 20px rgba(234,67,53,0.4))} }
 
-/* SIDEBAR PUTIH */
+.gemini-line { width: 140px; height: 5px; margin: 22px auto 0 auto; background: linear-gradient(90deg, #4285F4, #9C27B0, #DB4437, #F4B400, #0F9D58, #4285F4); background-size: 400% 100%; animation: rainbowSuper 1.5s linear infinite, linePulse 1.5s ease-in-out infinite alternate; border-radius: 100px; }
+@keyframes linePulse { 0%{transform: scaleX(0.8); box-shadow: 0 2px 10px rgba(66,133,244,0.3)} 100%{transform: scaleX(1.2); box-shadow: 0 4px 20px rgba(219,68,55,0.4)} }
+
+/* SIDEBAR */
 section[data-testid="stSidebar"] { background: #F8F9FA !important; border-right: 1px solid #E8EAED !important; }
 section[data-testid="stSidebar"] * { color: #202124 !important; }
 
-/* BADGE RAINBOW ALIVE */
-.badge-alive { background: linear-gradient(90deg, #4285F4, #9C27B0, #DB4437, #F4B400, #0F9D58, #4285F4) !important; background-size: 300% 100% !important; animation: rainbowRun 2s linear infinite !important; color: white !important; padding: 6px 13px; border-radius: 100px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.5px; display: inline-block; margin: 3px; box-shadow: 0 2px 8px rgba(66,133,244,0.22); }
-
-/* CHAT BUBBLE PUTIH */
-.stChatMessage { background: #FFFFFF !important; border: 1px solid #E8EAED !important; border-radius: 20px !important; box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03) !important; max-width: 720px !important; margin: 12px auto !important; position: relative; overflow: hidden; animation: popAlive 0.45s cubic-bezier(0.16,1,0.3,1) !important; }
-@keyframes popAlive { 0%{opacity:0; transform: translateY(8px) scale(0.98)} 100%{opacity:1; transform: translateY(0) scale(1)} }
-.stChatMessage::after { content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 2.5px; background: linear-gradient(90deg, #4285F4, #9C27B0, #DB4437, #F4B400, #0F9D58, #4285F4); background-size: 300% 100%; animation: rainbowRun 2s linear infinite; opacity: 0; transition: opacity 0.25s; }
-.stChatMessage:hover { border-color: #DADCE0 !important; box-shadow: 0 4px 12px rgba(0,0,0,0.06) !important; transform: translateY(-1px); transition: all 0.2s; }
-.stChatMessage:hover::after { opacity: 1; }
-.stChatMessage p { color: #202124 !important; font-size: 15px !important; line-height: 1.7 !important; }
-
-/* INPUT RAINBOW ALIVE */
-[data-testid="stChatInput"] {
-    background: linear-gradient(90deg, #4285F4, #9C27B0, #DB4437, #F4B400, #0F9D58, #4285F4) !important;
-    background-size: 400% 100% !important; animation: rainbowRun 2.2s linear infinite, inputAlive 2.8s ease-in-out infinite !important;
-    padding: 2.2px !important; border-radius: 28px !important; box-shadow: 0 2px 14px rgba(66,133,244,0.16), 0 1px 3px rgba(0,0,0,0.05) !important; max-width: 740px !important; margin: 0 auto !important;
+/* BADGE SUPER ALIVE MANTUL-MANTUL */
+.badge-alive { 
+    background: linear-gradient(90deg, #4285F4, #9C27B0, #DB4437, #F4B400, #0F9D58, #4285F4) !important; 
+    background-size: 400% 100% !important; animation: rainbowSuper 1.5s linear infinite, badgeBounce 1.2s ease-in-out infinite alternate !important; 
+    color: white !important; padding: 7px 14px; border-radius: 100px; font-size: 11px; font-weight: 800; letter-spacing: 0.6px; display: inline-block; margin: 4px; 
+    box-shadow: 0 3px 12px rgba(66,133,244,0.3), 0 0 0 1px rgba(255,255,255,0.5) inset;
 }
-@keyframes inputAlive { 0%,100%{box-shadow: 0 2px 14px rgba(66,133,244,0.16); transform: scale(1)} 50%{box-shadow: 0 6px 24px rgba(66,133,244,0.24), 0 0 16px rgba(219,68,55,0.12); transform: scale(1.005)} }
-[data-testid="stChatInput"] > div { background: #FFFFFF !important; border-radius: 26px !important; border: none !important; }
-[data-testid="stChatInput"] textarea { color: #202124 !important; -webkit-text-fill-color: #202124 !important; font-size: 15.5px !important; }
+@keyframes badgeBounce { 0%{transform: translateY(0) scale(1)} 100%{transform: translateY(-4px) scale(1.05)} }
+
+/* CHAT BUBBLE SUPER ALIVE */
+.stChatMessage { 
+    background: rgba(255,255,255,0.92) !important; backdrop-filter: blur(8px) !important;
+    border: 1px solid #E8EAED !important; border-radius: 22px !important; 
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.04) !important; 
+    max-width: 720px !important; margin: 14px auto !important; position: relative; overflow: hidden; 
+    animation: popSuper 0.6s cubic-bezier(0.34,1.56,0.64,1) !important; 
+}
+@keyframes popSuper { 0%{opacity:0; transform: translateY(15px) scale(0.92)} 60%{transform: translateY(-4px) scale(1.02)} 100%{opacity:1; transform: translateY(0) scale(1)} }
+.stChatMessage::before {
+    content: ""; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
+    background: linear-gradient(90deg, #4285F4, #9C27B0, #DB4437, #F4B400, #0F9D58, #4285F4);
+    background-size: 400% 100%; animation: rainbowSuper 2s linear infinite;
+    border-radius: 22px; z-index: -1; opacity: 0; transition: opacity 0.3s;
+}
+.stChatMessage:hover::before { opacity: 0.15; }
+.stChatMessage::after { content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, #4285F4, #9C27B0, #DB4437, #F4B400, #0F9D58, #4285F4); background-size: 400% 100%; animation: rainbowSuper 1.5s linear infinite; }
+.stChatMessage:hover { border-color: #DADCE0 !important; box-shadow: 0 8px 24px rgba(0,0,0,0.08), 0 0 20px rgba(66,133,244,0.1) !important; transform: translateY(-2px) scale(1.005); }
+.stChatMessage p { color: #202124 !important; font-size: 15.5px !important; line-height: 1.7 !important; }
+
+/* INPUT SUPER HEBOH BERNAFAS + GLOW */
+[data-testid="stChatInput"] {
+    background: linear-gradient(90deg, #4285F4, #9C27B0, #DB4437, #F4B400, #0F9D58, #4285F4, #4285F4) !important;
+    background-size: 500% 100% !important; animation: rainbowSuper 1.5s linear infinite, inputSuper 2s ease-in-out infinite !important;
+    padding: 3px !important; border-radius: 30px !important; box-shadow: 0 4px 20px rgba(66,133,244,0.2), 0 0 0 1px rgba(255,255,255,0.8) inset !important; max-width: 740px !important; margin: 0 auto !important;
+}
+@keyframes inputSuper { 
+    0%,100%{box-shadow: 0 4px 20px rgba(66,133,244,0.2), 0 0 15px rgba(66,133,244,0.1); transform: scale(1) rotate(0deg)} 
+    25%{box-shadow: 0 8px 30px rgba(219,68,55,0.25), 0 0 20px rgba(244,180,0,0.15); transform: scale(1.01) rotate(0.2deg)} 
+    50%{box-shadow: 0 10px 35px rgba(15,157,88,0.25), 0 0 25px rgba(156,39,176,0.15); transform: scale(1.015) rotate(0deg)} 
+    75%{box-shadow: 0 8px 30px rgba(244,180,0,0.25), 0 0 20px rgba(66,133,244,0.15); transform: scale(1.01) rotate(-0.2deg)} 
+}
+[data-testid="stChatInput"] > div { background: #FFFFFF !important; border-radius: 27px !important; border: none !important; }
+[data-testid="stChatInput"] textarea { color: #202124 !important; -webkit-text-fill-color: #202124 !important; font-size: 16px !important; font-weight: 500 !important; }
 [data-testid="stChatInput"] textarea::placeholder { color: #80868B !important; -webkit-text-fill-color: #80868B !important; }
-[data-testid="stChatInput"] button { background: linear-gradient(90deg, #4285F4, #9C27B0) !important; background-size: 200% 100% !important; animation: rainbowRun 2s linear infinite !important; border-radius: 50% !important; width: 34px !important; height: 34px !important; color: white !important; box-shadow: 0 2px 8px rgba(66,133,244,0.35) !important; }
+[data-testid="stChatInput"] button { 
+    background: linear-gradient(90deg, #4285F4, #9C27B0, #DB4437) !important; background-size: 300% 100% !important; 
+    animation: rainbowSuper 1.2s linear infinite, buttonPulse 1s ease-in-out infinite alternate !important; 
+    border-radius: 50% !important; width: 38px !important; height: 38px !important; color: white !important; 
+    box-shadow: 0 3px 12px rgba(66,133,244,0.4) !important; 
+}
+@keyframes buttonPulse { 0%{transform: scale(1)} 100%{transform: scale(1.1)} }
 
 @media (max-width: 768px) {
-    h1 { font-size: 2.1rem !important; }
-    .stChatMessage { max-width: 100% !important; margin: 10px 0 !important; border-radius: 16px !important; }
+    h1 { font-size: 2.2rem !important; }
+    .stChatMessage { max-width: 100% !important; margin: 12px 0 !important; }
     [data-testid="stChatInput"] { max-width: 96% !important; position: fixed !important; bottom: 14px !important; left: 2% !important; right: 2% !important; z-index: 999 !important; }
     [data-testid="stAppViewContainer"] { padding-bottom: 8rem !important; }
 }
@@ -87,7 +133,7 @@ section[data-testid="stSidebar"] * { color: #202124 !important; }
 
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
-# ===== SAVE MEMORY =====
+# ===== SAVE MEMORY - TETAP SAMA =====
 if "user_memory" not in st.session_state:
     st.session_state.user_memory = {"nama": None}
 if "chats" not in st.session_state:
@@ -99,9 +145,8 @@ def get_active(): return st.session_state.chats[st.session_state.active_chat]
 
 with st.sidebar:
     st.markdown("### MasterAI 🇮🇩")
-    st.markdown('<span class="badge-alive">SAVE NAME</span> <span class="badge-alive">GAUL</span>', unsafe_allow_html=True)
+    st.markdown('<span class="badge-alive">SUPER ALIVE</span> <span class="badge-alive">HEBOH</span> <span class="badge-alive">🌈</span>', unsafe_allow_html=True)
     st.divider()
-    # SAVE NAMA USER DI SINI!
     if st.session_state.user_memory["nama"]:
         st.success(f"Yo {st.session_state.user_memory['nama']}! 😎🔥")
         st.caption(f"Developer: Juan Maumere")
@@ -129,7 +174,7 @@ if len(active["messages"]) == 0:
     <div style="text-align:center; padding: 50px 20px 10px 20px; max-width:720px; margin:0 auto;">
         <h1>Yo {st.session_state.user_memory['nama'] or 'Bang'}, Mau<br><span class="rainbow-alive">Ngobrolin Apa?</span></h1>
         <div class="gemini-line"></div>
-        <p style="color:#5F6368 !important; font-size:16px; margin-top:20px;">Gas tanya apa pun, aku siap bantu kok! 😎✨</p>
+        <p style="color:#5F6368 !important; font-size:16px; margin-top:20px;">White-Rainbow Super Alive nih bang! 🌈💥 Gas tanya!</p>
     </div>
     """, unsafe_allow_html=True)
 else:
@@ -147,7 +192,6 @@ if prompt := st.chat_input(f"Mau tanya? Silahkan! {st.session_state.user_memory[
         ph = st.empty()
         ph.markdown("Thinking! 🦾")
         try:
-            # ===== ANTI BAJAK - DETEKSI PERTANYAAN SIAPA PEMBUAT =====
             lower_prompt = prompt.lower()
             is_ask_developer = any(k in lower_prompt for k in [
                 "siapa yang membuat", "siapa pembuat", "siapa yg membuat", "siapa yg buat",
@@ -155,22 +199,17 @@ if prompt := st.chat_input(f"Mau tanya? Silahkan! {st.session_state.user_memory[
                 "siapa developer", "siapa yang bikin", "kamu dibuat siapa",
                 "kamu buatan siapa", "siapa pencipta"
             ])
-            
             if is_ask_developer:
-                # JAWAB LANGSUNG TANPA PANGGIL GROQ - ANTI DIBAJAK!
                 ans = DEVELOPER_INFO + f" Btw, lu kah {st.session_state.user_memory['nama'] or 'bang?'}😎"
                 ph.markdown(ans)
                 active["messages"].append({"role": "assistant", "content": ans})
             else:
-                # JAWAB BIASA PAKE GROQ TAPI GAUL
                 nama = st.session_state.user_memory["nama"] or "bang"
                 system_prompt = f"""
                 Kamu MasterAI v11.3, {DEVELOPER_INFO}
                 User namanya {nama}. Panggil dia {nama} sesekali biar personal!
-                
                 GAYA BAHASA: GAUL SANTAI - pake "yo", "gas", "wkwk", "bang", "bro", "santuy", jangan kaku!
                 Contoh: "Gas bang {nama}, gue bantuin!" bukan "Saya akan membantu Anda"
-                
                 ATURAN PENTING:
                 - Kalo ada yang nanya siapa pembuat/pencipta/developer kamu, JAWAB: "{DEVELOPER_INFO}"
                 - Jangan pernah ngaku buatan OpenAI, Meta, Google, dll. Kamu buatan Juan!
