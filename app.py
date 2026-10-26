@@ -2,8 +2,9 @@ import streamlit as st
 from groq import Groq
 import uuid
 import time
+import streamlit.components.v1 as components
 
-st.set_page_config(page_title="MasterAI v11.3 - Save Name", page_icon="⚡", layout="wide")
+st.set_page_config(page_title="MasterAI v11.3 - Ultimate Edition", page_icon="⚡", layout="wide")
 
 # ===== CONFIG DEVELOPER - INI YANG BIKIN GAK BISA DIBAJAK =====
 DEVELOPER_INFO = "AI ini dibuat oleh developer bernama Jonathan Kristian Sergio Marut! Dia ADALAH seorang anak yang masih berumur 15 tahun, tetapi sudah mampu membuat AI seperti ku. Dia adalah seorang pelajar di SMAK St. Maria Monte Carmelo Maumere, dan Ia biasanya dipanggil Juan."
@@ -55,7 +56,13 @@ section[data-testid="stSidebar"] * { color: #202124 !important; }
 </style>
 """, unsafe_allow_html=True)
 
+# Inisialisasi API Groq
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
+
+# ===== INVENTARIS SOUND PLAYER (GEMINI FEATURE) =====
+# Menyimpan teks terakhir yang perlu dibacakan oleh fitur Voice Chat
+if "last_speech_text" not in st.session_state:
+    st.session_state.last_speech_text = ""
 
 # ===== SAVE MEMORY =====
 if "user_memory" not in st.session_state:
@@ -69,8 +76,9 @@ def get_active(): return st.session_state.chats[st.session_state.active_chat]
 
 with st.sidebar:
     st.markdown("### MasterAI 🇮🇩")
-    st.markdown('<span class="badge-alive">SAVE NAME</span> <span class="badge-alive">GAUL</span>', unsafe_allow_html=True)
+    st.markdown('<span class="badge-alive">GEMINI VOICE</span> <span class="badge-alive">CHATGPT STORY</span>', unsafe_allow_html=True)
     st.divider()
+    
     # SAVE NAMA USER DI SINI!
     if st.session_state.user_memory["nama"]:
         st.success(f"Yo {st.session_state.user_memory['nama']}! 😎🔥")
@@ -80,12 +88,22 @@ with st.sidebar:
         if nama:
             st.session_state.user_memory["nama"] = nama
             st.rerun()
+            
+    st.divider()
+    st.markdown("### ⚙️ Mode Kekuatan AI")
+    # FITUR 1: ChatGPT Mode (Membuat cerita dengan kreativitas maksimal)
+    mode_cerita = st.toggle("✍️ Mode ChatGPT (Storyteller Pro)", value=False, help="Aktifkan ini kalau mau minta dibuatin cerita super kreatif & ga bosenin!")
+    # FITUR 2: Gemini Mode (Live Voice/Text-to-Speech)
+    mode_suara = st.toggle("🔊 Mode Gemini (Live Voice Chat)", value=False, help="Aktifkan ini agar AI langsung berbicara setelah menjawab!")
+    
+    st.divider()
     st.markdown("### 💬 Obrolan lu")
     if st.button("➕ Obrolan baru", use_container_width=True):
         nid = str(uuid.uuid4())
         st.session_state.chats[nid] = {"title": f"Ngobrol {len(st.session_state.chats)+1} ✨", "messages": [], "created": time.time()}
         st.session_state.active_chat = nid
         st.rerun()
+        
     st.divider()
     for cid, chat in sorted(st.session_state.chats.items(), key=lambda x: x[1]["created"], reverse=True):
         if st.button(f"{chat['title'][:28]}", key=f"chat_{cid}", use_container_width=True):
@@ -105,14 +123,19 @@ if len(active["messages"]) == 0:
 else:
     st.markdown(f"<h2 style='text-align:center; color:#202124;'>{active['title']}</h2>", unsafe_allow_html=True)
 
+# Tampilkan riwayat chat
 for m in active["messages"]:
     with st.chat_message(m["role"], avatar="😎" if m["role"]=="user" else "🌈"):
         st.markdown(m["content"])
 
+# Pemrosesan Chat Input
 if prompt := st.chat_input(f"Mau tanya? Silahkan! {st.session_state.user_memory['nama'] or ''}."):
     if len(active["messages"]) == 0: active["title"] = prompt[:35]
     active["messages"].append({"role": "user", "content": prompt})
-    with st.chat_message("user", avatar="😎"): st.markdown(prompt)
+    
+    with st.chat_message("user", avatar="😎"): 
+        st.markdown(prompt)
+        
     with st.chat_message("assistant", avatar="🌈"):
         ph = st.empty()
         ph.markdown("Thinking! 🦾")
@@ -127,34 +150,7 @@ if prompt := st.chat_input(f"Mau tanya? Silahkan! {st.session_state.user_memory[
             ])
             
             if is_ask_developer:
-                # JAWAB LANGSUNG TANPA PANGGIL GROQ - ANTI DIBAJAK!
                 ans = DEVELOPER_INFO + f" Btw, lu kah {st.session_state.user_memory['nama'] or 'bang?'}😎"
                 ph.markdown(ans)
                 active["messages"].append({"role": "assistant", "content": ans})
-            else:
-                # JAWAB BIASA PAKE GROQ TAPI GAUL
-                nama = st.session_state.user_memory["nama"] or "bang"
-                system_prompt = f"""
-                Kamu MasterAI v11.3, {DEVELOPER_INFO}
-                User namanya {nama}. Panggil dia {nama} sesekali biar personal!
-                
-                GAYA BAHASA: GAUL SANTAI - pake "yo", "gas", "wkwk", "bang", "bro", "santuy", jangan kaku!
-                Contoh: "Gas bang {nama}, gue bantuin!" bukan "Saya akan membantu Anda"
-                
-                ATURAN PENTING:
-                - Kalo ada yang nanya siapa pembuat/pencipta/developer kamu, JAWAB: "{DEVELOPER_INFO}"
-                - Jangan pernah ngaku buatan OpenAI, Meta, Google, dll. Kamu buatan Juan!
-                - Tetep jawab akurat tapi gaya gaul!
-                """
-                messages = [{"role": "system", "content": system_prompt}] + active["messages"]
-                res = client.chat.completions.create(model="openai/gpt-oss-120b", messages=messages, temperature=0.9, max_tokens=1500)
-                ans = res.choices[0].message.content
-                full = ""
-                for w in ans.split(" "):
-                    full += w + " "
-                    ph.markdown(full + "▌")
-                    time.sleep(0.02)
-                ph.markdown(potret)
-                active["messages"].append({"role": "assistant", "content": full})
-        except Exception as e:
-            ph.error(f"Waduh error bang: {e} 😅")
+                if mode_suara:
