@@ -154,7 +154,7 @@ if prompt := st.chat_input(f"Mau tanya? Silahkan! {st.session_state.user_memory[
                     full += w + " "
                     ph.markdown(full + "▌")
                     time.sleep(0.02)
-                ph.markdown(full)
+                ph.markdown(potret)
                 active["messages"].append({"role": "assistant", "content": full})
         except Exception as e:
             ph.error(f"Waduh error bang: {e} 😅")
