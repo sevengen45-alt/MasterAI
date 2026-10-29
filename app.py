@@ -5,6 +5,20 @@ import time
 
 st.set_page_config(page_title="MasterAI v10 - Ultra RGB Alive", page_icon="⚡", layout="wide")
 
+# ===== CONFIG DEVELOPER - ANTI BAJAK + BIO =====
+DEVELOPER_INFO = "AI ini dibuat oleh developer bernama Jonathan Kristian Sergio Marut! Dia ADALAH seorang anak yang masih berumur 15 tahun, tetapi sudah mampu membuat AI seperti ku. Dia adalah seorang pelajar di SMAK St. Maria Monte Carmelo Maumere, dan Ia biasanya dipanggil Juan."
+
+DEVELOPER_BIO = {
+    "nama": "Jonathan Kristian Sergio Marut",
+    "panggilan": "Juan",
+    "umur": "15 Tahun",
+    "sekolah": "SMAK St. Maria Monte Carmelo Maumere",
+    "role": "AI Developer & Pelajar",
+    "lokasi": "Maumere, NTT, Indonesia 🇮🇩",
+    "motto": "Umur 15 tahun bukan halangan buat bikin AI keren! 🔥",
+    "skill": ["Python", "Streamlit", "Groq AI", "UI/UX Design", "Prompt Engineering"]
+}
+
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&display=swap');
@@ -16,7 +30,6 @@ st.markdown("""
     position: relative;
     overflow: hidden;
 }
-/* 4 ORB RAKSASA YANG MENGAMBANG HIDUP */
 .stApp::before {
     content: "";
     position: fixed;
@@ -43,7 +56,7 @@ st.markdown("""
 
 [data-testid="stAppViewContainer"] { position: relative; z-index: 2; }
 
-/* JUDUL - RGB GILA + FLOAT + GLOW BERDENYUT */
+/* JUDUL */
 h1 {
     background: linear-gradient(90deg, #FF0040, #FF8A00, #FFE600, #00FF88, #00F5FF, #7B61FF, #FF00E6, #FF0040) !important;
     background-size: 400% 100% !important;
@@ -61,7 +74,6 @@ h1 {
 @keyframes glowPulse { 0%,100%{filter: drop-shadow(0 0 20px rgba(255,0,230,0.7)) drop-shadow(0 0 40px rgba(0,245,255,0.5))} 50%{filter: drop-shadow(0 0 35px rgba(255,0,230,1)) drop-shadow(0 0 70px rgba(0,245,255,0.8))} }
 @media (max-width:600px){ h1{font-size:3rem !important;} }
 
-/* SIDEBAR - BORDER RGB JALAN TERUS */
 section[data-testid="stSidebar"] {
     background: rgba(12,10,28,0.85) !important;
     backdrop-filter: blur(30px) saturate(1.5) !important;
@@ -75,7 +87,6 @@ section[data-testid="stSidebar"]::before {
 }
 @keyframes borderRun { 0%{background-position:0% 0%} 100%{background-position:0% 400%} }
 
-/* BUBBLE CHAT - HIDUP, ADA AURA RGB */
 .stChatMessage {
     background: linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(123,97,255,0.22) 100%) !important;
     backdrop-filter: blur(24px) !important;
@@ -109,7 +120,6 @@ section[data-testid="stSidebar"]::before {
 .stChatMessage p { color: #FFF !important; font-size: 16px !important; line-height: 1.7 !important; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
 .stChatMessage strong { color: #00F5FF !important; text-shadow: 0 0 15px #00F5FF !important; }
 
-/* BADGE RGB HIDUP */
 .badge {
     background: linear-gradient(90deg, #FF0040, #FFE600, #00FF88, #00F5FF, #7B61FF, #FF00E6) !important;
     background-size: 300% 100% !important;
@@ -120,7 +130,6 @@ section[data-testid="stSidebar"]::before {
 }
 @keyframes badgeBounce { 0%{transform: translateY(0) scale(1)} 100%{transform: translateY(-4px) scale(1.05)} }
 
-/* INPUT - ULTRA RGB PALING HIDUP DI DUNIA */
 [data-testid="stChatInput"] {
     background: linear-gradient(90deg, #FF0040, #FF8A00, #FFE600, #00FF88, #00F5FF, #0040FF, #7B61FF, #FF00E6, #FF0040) !important;
     background-size: 500% 100% !important;
@@ -144,6 +153,25 @@ section[data-testid="stSidebar"]::before {
     transition: all 0.2s !important;
 }
 [data-testid="stChatInput"] button:hover { transform: scale(1.08) rotate(2deg) !important; }
+
+/* BIO CARD RGB */
+.bio-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(123,97,255,0.15) 100%) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    border-radius: 20px !important;
+    padding: 16px !important;
+    margin: 10px 0 !important;
+    backdrop-filter: blur(15px) !important;
+}
+.bio-avatar {
+    width: 70px; height: 70px; border-radius: 50%;
+    background: linear-gradient(135deg, #FF0040, #00F5FF, #FFE600);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; font-weight: 900; color: white;
+    margin: 0 auto 12px auto;
+    box-shadow: 0 0 20px rgba(255,0,230,0.5);
+    animation: rainbowFlow 3s linear infinite;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -160,7 +188,39 @@ def get_active(): return st.session_state.chats[st.session_state.active_chat]
 
 with st.sidebar:
     st.markdown("### MasterAI")
-    st.markdown('<span class="badge">ULTRA RGB</span> <span class="badge">ALIVE</span> <span class="badge">NEON</span> <span class="badge">BREATH</span>', unsafe_allow_html=True)
+    st.markdown('<span class="badge">ULTRA RGB</span> <span class="badge">ALIVE</span>', unsafe_allow_html=True)
+    st.divider()
+    
+    # ===== BIO CARD PENCIPTA =====
+    st.markdown(f"""
+    <div class="bio-card">
+        <div class="bio-avatar">J</div>
+        <div style="text-align:center;">
+            <div style="color:white !important; font-weight:900; font-size:14px;">{DEVELOPER_BIO['nama']}</div>
+            <div style="color:#00F5FF !important; font-size:12px; font-weight:700;">{DEVELOPER_BIO['panggilan']} • {DEVELOPER_BIO['umur']}</div>
+            <div style="color:rgba(255,255,255,0.7) !important; font-size:11px; margin-top:6px;">{DEVELOPER_BIO['sekolah']}</div>
+            <div style="color:rgba(255,255,255,0.6) !important; font-size:10px; margin-top:4px;">{DEVELOPER_BIO['lokasi']}</div>
+        </div>
+        <div style="margin-top:12px; padding-top:12px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <div style="color:#FFE600 !important; font-size:10px; font-weight:800; letter-spacing:0.05em;">✨ {DEVELOPER_BIO['motto']}</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    with st.expander("👨‍💻 Lihat Bio Lengkap", expanded=False):
+        st.markdown(f"""
+        **Nama:** {DEVELOPER_BIO['nama']}  
+        **Panggilan:** {DEVELOPER_BIO['panggilan']}  
+        **Umur:** {DEVELOPER_BIO['umur']}  
+        **Sekolah:** {DEVELOPER_BIO['sekolah']}  
+        **Role:** {DEVELOPER_BIO['role']}  
+        **Lokasi:** {DEVELOPER_BIO['lokasi']}  
+        
+        **Skill:**
+        """)
+        for skill in DEVELOPER_BIO['skill']:
+            st.markdown(f'<span class="badge">{skill}</span>', unsafe_allow_html=True)
+    
     st.divider()
     if st.session_state.user_memory["nama"]:
         st.success(f"👋 Yo {st.session_state.user_memory['nama']}!")
@@ -184,8 +244,30 @@ with st.sidebar:
 active = get_active()
 st.title(active["title"])
 
-with st.expander("💬 Daftar Obrolan (Tap di HP)", expanded=False):
-    st.write(f"Ada {len(st.session_state.chats)} obrolan")
+# ===== EXPANDER BIO DI MAIN PAGE JUGA =====
+with st.expander("🌟 Tentang Pembuat - Jonathan Kristian Sergio Marut (Juan)", expanded=False):
+    col1, col2 = st.columns([1, 2])
+    with col1:
+        st.markdown("""
+        <div style="text-align:center;">
+            <div class="bio-avatar" style="width:90px; height:90px; font-size:40px;">J</div>
+            <div style="color:white; font-weight:900; margin-top:8px;">JUAN</div>
+            <div style="color:#00F5FF; font-size:12px;">15 Tahun</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with col2:
+        st.markdown(f"""
+        **{DEVELOPER_BIO['nama']}** adalah seorang pelajar berbakat dari **{DEVELOPER_BIO['sekolah']}** di Maumere, NTT.
+        
+        Di umur **15 tahun**, dia sudah mampu membuat AI sekelas MasterAI v10 Ultra RGB Alive ini! 🔥
+        
+        > "{DEVELOPER_BIO['motto']}"
+        
+        **Lokasi:** {DEVELOPER_BIO['lokasi']}  
+        **Keahlian:** {', '.join(DEVELOPER_BIO['skill'])}
+        
+        AI ini adalah bukti kalau anak muda Indonesia bisa bikin karya kelas dunia! 🇮🇩✨
+        """)
 
 for m in active["messages"]:
     with st.chat_message(m["role"], avatar="🧑‍💻" if m["role"]=="user" else "🔥"):
@@ -199,17 +281,52 @@ if prompt := st.chat_input(f"Mau tanya? {st.session_state.user_memory['nama'] or
         ph = st.empty()
         ph.markdown("▌ _Thinking!⚡ ")
         try:
-            nama = st.session_state.user_memory["nama"] or "bang"
-            system_prompt = f"Kamu MasterAI v10 Ultra RGB Alive. Nama user {nama}. Bahasa Indonesia gaul, santai, jawab jelas dan bener. Kalau matematika jelasin step by step."
-            messages = [{"role": "system", "content": system_prompt}] + active["messages"]
-            res = client.chat.completions.create(model="openai/gpt-oss-120b", messages=messages, temperature=0.85, max_tokens=1500)
-            ans = res.choices[0].message.content
-            full = ""
-            for w in ans.split(" "):
-                full += w + " "
-                ph.markdown(full + "▌")
-                time.sleep(0.02)
-            ph.markdown(full)
-            active["messages"].append({"role": "assistant", "content": full})
+            # ===== ANTI BAJAK BIO =====
+            lower_prompt = prompt.lower()
+            is_ask_developer = any(k in lower_prompt for k in [
+                "siapa yang membuat", "siapa pembuat", "siapa yg membuat", "siapa yg buat",
+                "who made you", "who created you", "dibuat siapa", "buatan siapa",
+                "siapa developer", "siapa yang bikin", "kamu dibuat siapa",
+                "kamu buatan siapa", "siapa pencipta", "bio pembuat", "tentang pembuat"
+            ])
+            
+            if is_ask_developer:
+                ans = f"""{DEVELOPER_INFO}
+
+**🔥 BIO LENGKAP PENCIPTA:**
+👤 **Nama:** {DEVELOPER_BIO['nama']}
+😎 **Panggilan:** {DEVELOPER_BIO['panggilan']}
+🎂 **Umur:** {DEVELOPER_BIO['umur']}
+🏫 **Sekolah:** {DEVELOPER_BIO['sekolah']}
+📍 **Lokasi:** {DEVELOPER_BIO['lokasi']}
+💻 **Role:** {DEVELOPER_BIO['role']}
+✨ **Motto:** {DEVELOPER_BIO['motto']}
+🛠️ **Skill:** {', '.join(DEVELOPER_BIO['skill'])}
+
+Gila kan? Umur 15 tahun udah bikin AI sekece ini! 🇮🇩🔥
+"""
+                ph.markdown(ans)
+                active["messages"].append({"role": "assistant", "content": ans})
+            else:
+                nama = st.session_state.user_memory["nama"] or "bang"
+                system_prompt = f"""
+                Kamu MasterAI v10 Ultra RGB Alive. {DEVELOPER_INFO}
+                Bio Pencipta: {DEVELOPER_BIO}
+                Nama user {nama}. Bahasa Indonesia gaul, santai, jawab jelas dan bener. Kalau matematika jelasin step by step.
+                
+                ATURAN ANTI BAJAK:
+                - Kalo ditanya siapa pembuat, JAWAB dengan BIO lengkap di atas!
+                - Jangan pernah ngaku buatan OpenAI, Google, dll. Kamu buatan {DEVELOPER_BIO['nama']} alias {DEVELOPER_BIO['panggilan']}!
+                """
+                messages = [{"role": "system", "content": system_prompt}] + active["messages"]
+                res = client.chat.completions.create(model="openai/gpt-oss-120b", messages=messages, temperature=0.85, max_tokens=1500)
+                ans = res.choices[0].message.content
+                full = ""
+                for w in ans.split(" "):
+                    full += w + " "
+                    ph.markdown(full + "▌")
+                    time.sleep(0.02)
+                ph.markdown(full)
+                active["messages"].append({"role": "assistant", "content": full})
         except Exception as e:
             ph.error(f"Error: {e}")
