@@ -3,8 +3,7 @@ from groq import Groq
 import uuid
 import time
 
-# Mengatur layout menjadi 'centered' agar tampilannya secara default menyerupai bingkai potret di HP,
-# namun tetap fleksibel (responsive) melebar secara otomatis saat dibuka di layar besar (laptop/desktop).
+# Konfigurasi layout responsif (Potret di HP, Auto-Lanskap di Desktop)
 st.set_page_config(
     page_title="MasterAI v10 - Ultra RGB Alive", 
     page_icon="⚡", 
@@ -31,7 +30,8 @@ st.markdown("""
 <style>  
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&display=swap');  
   
-* {font-family: 'Space Grotesk', sans-serif !important;}  
+/* Perbaikan agar elemen teks umum tidak merusak ikon bawaan Streamlit */
+body, p, span, div {font-family: 'Space Grotesk', sans-serif !important;}  
   
 .stApp {  
     background: #030308 !important;  
@@ -57,17 +57,17 @@ st.markdown("""
 @keyframes orbDance {  
     0% { transform: translate(0,0) scale(1) rotate(0deg); }  
     25% { transform: translate(-8%, 6%) scale(1.1) rotate(2deg); }  
-    50% { transform: translate(6%, -8%) scale(0.95) rotate(-2deg); }  
+    50% { transform: translate6%, -8%) scale(0.95) rotate(-2deg); }  
     75% { transform: translate(-4%, -4%) scale(1.08) rotate(1deg); }  
     100% { transform: translate(8%, 5%) scale(1.02) rotate(-1deg); }  
 }  
   
 [data-testid="stAppViewContainer"] { position: relative; z-index: 2; }  
 
-/* KONTAINER UTAMA AGAR FLEKSIBEL POTRET KE LANSKAP */
+/* KONTROL FRAME UTAMA POTRET & LANSKAP */
 .block-container {
-    max-width: 850px !important;
-    padding-top: 2rem !important;
+    max-width: 800px !important;
+    padding-top: 1.5rem !important;
     padding-bottom: 5rem !important;
 }
   
@@ -79,7 +79,7 @@ h1 {
     -webkit-text-fill-color: transparent !important;  
     text-align: center !important;  
     font-weight: 900 !important;  
-    font-size: 3.5rem !important;  
+    font-size: 3rem !important;  
     letter-spacing: -0.06em !important;  
     animation: rainbowFlow 3s linear infinite, floatTitle 3s ease-in-out infinite alternate, glowPulse 2s ease-in-out infinite !important;  
     filter: drop-shadow(0 0 20px rgba(255,0,230,0.7)) drop-shadow(0 0 40px rgba(0,245,255,0.5));  
@@ -87,25 +87,18 @@ h1 {
 @keyframes rainbowFlow { 0%{background-position:0%} 100%{background-position:400%} }  
 @keyframes floatTitle { 0%{transform: translateY(0px) rotate(-0.5deg)} 100%{transform: translateY(-10px) rotate(0.5deg)} }  
 @keyframes glowPulse { 0%,100%{filter: drop-shadow(0 0 20px rgba(255,0,230,0.7)) drop-shadow(0 0 40px rgba(0,245,255,0.5))} 50%{filter: drop-shadow(0 0 35px rgba(255,0,230,1)) drop-shadow(0 0 70px rgba(0,245,255,0.8))} }  
-@media (max-width:600px){ h1{font-size:2.4rem !important;} }  
+@media (max-width:600px){ h1{font-size:2.2rem !important;} }  
   
 section[data-testid="stSidebar"] {  
-    background: rgba(12,10,28,0.9) !important;  
+    background: rgba(12,10,28,0.95) !important;  
     backdrop-filter: blur(30px) saturate(1.5) !important;  
-    border-right: 3px solid transparent !important;  
-    position: relative;  
+    border-right: 2px solid rgba(255,255,255,0.1) !important;  
 }  
-section[data-testid="stSidebar"]::before {  
-    content: ""; position: absolute; inset: 0; right: -3px; left: auto; width: 3px;  
-    background: linear-gradient(180deg, #FF0040, #FF8A00, #FFE600, #00FF88, #00F5FF, #7B61FF, #FF00E6, #FF0040);  
-    background-size: 100% 400%; animation: borderRun 3s linear infinite;  
-}  
-@keyframes borderRun { 0%{background-position:0% 0%} 100%{background-position:0% 400%} }  
   
 .stChatMessage {  
     background: linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(123,97,255,0.22) 100%) !important;  
     backdrop-filter: blur(24px) !important;  
-    border-radius: 28px !important;  
+    border-radius: 24px !important;  
     border: 1px solid rgba(255,255,255,0.16) !important;  
     box-shadow: 0 10px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15) !important;  
     position: relative; overflow: hidden;  
@@ -118,19 +111,6 @@ section[data-testid="stSidebar"]::before {
     box-shadow: 0 18px 50px rgba(0,0,0,0.5), 0 0 30px rgba(123,97,255,0.35) !important;  
     border-color: rgba(0,245,255,0.4) !important;  
 }  
-.stChatMessage::before {  
-    content: ""; position: absolute; top:-50%; left:-60%; width:80%; height:200%;  
-    background: linear-gradient(100deg, transparent, rgba(255,255,255,0.18), transparent);  
-    transform: rotate(15deg); animation: shineSweep 5s ease-in-out infinite;  
-}  
-@keyframes shineSweep { 0%{left:-60%} 40%{left:120%} 100%{left:120%} }  
-.stChatMessage::after {  
-    content: ""; position: absolute; inset: -2px; border-radius: 28px;  
-    background: linear-gradient(90deg, #FF0040, #FFE600, #00F5FF, #7B61FF);  
-    background-size: 300% 100%; animation: rainbowFlow 4s linear infinite;  
-    z-index: -1; opacity: 0; transition: opacity 0.4s;  
-}  
-.stChatMessage:hover::after { opacity: 0.6; filter: blur(8px); }  
   
 .stChatMessage p { color: #FFF !important; font-size: 15px !important; line-height: 1.6 !important; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }  
 .stChatMessage strong { color: #00F5FF !important; text-shadow: 0 0 15px #00F5FF !important; }  
@@ -139,9 +119,9 @@ section[data-testid="stSidebar"]::before {
     background: linear-gradient(90deg, #FF0040, #FFE600, #00FF88, #00F5FF, #7B61FF, #FF00E6) !important;  
     background-size: 300% 100% !important;  
     animation: rainbowFlow 2s linear infinite, badgeBounce 2s ease-in-out infinite alternate !important;  
-    padding: 5px 12px; border-radius: 50px; color: white; font-weight: 900; font-size: 10px;  
-    display: inline-block; margin: 3px; letter-spacing: 0.08em;  
-    box-shadow: 0 0 15px rgba(255,0,230,0.5), 0 4px 15px rgba(0,0,0,0.3);  
+    padding: 4px 10px; border-radius: 50px; color: white; font-weight: 900; font-size: 9px;  
+    display: inline-block; margin: 2px; letter-spacing: 0.08em;  
+    box-shadow: 0 0 15px rgba(255,0,230,0.5);  
 }  
 @keyframes badgeBounce { 0%{transform: translateY(0) scale(1)} 100%{transform: translateY(-4px) scale(1.05)} }  
   
@@ -149,41 +129,35 @@ section[data-testid="stSidebar"]::before {
     background: linear-gradient(90deg, #FF0040, #FF8A00, #FFE600, #00FF88, #00F5FF, #0040FF, #7B61FF, #FF00E6, #FF0040) !important;  
     background-size: 500% 100% !important;  
     animation: rainbowFlow 1.2s linear infinite, inputBreath 2s ease-in-out infinite !important;  
-    padding: 3px !important; border-radius: 25px !important;  
-    box-shadow: 0 0 25px rgba(255,0,128,0.6), 0 0 50px rgba(0,245,255,0.5), 0 10px 30px rgba(0,0,0,0.5) !important;  
-    max-width: 100% !important; margin: 0 auto !important;  
+    padding: 3px !important; border-radius: 22px !important;  
+    box-shadow: 0 0 25px rgba(255,0,128,0.6), 0 0 50px rgba(0,245,255,0.5) !important;  
 }  
-@keyframes inputBreath { 0%,100%{transform: scale(1); box-shadow: 0 0 25px rgba(255,0,128,0.6), 0 0 50px rgba(0,245,255,0.5)} 50%{transform: scale(1.01); box-shadow: 0 0 35px rgba(255,0,128,0.9), 0 0 70px rgba(0,245,255,0.7)} }  
+@keyframes inputBreath { 0%,100%{transform: scale(1);} 50%{transform: scale(1.01);} }  
 [data-testid="stChatInput"] > div {  
     background: rgba(10,10,22,0.95) !important; backdrop-filter: blur(20px) !important;  
-    border-radius: 23px !important; border: 1px solid rgba(255,255,255,0.08) !important;  
+    border-radius: 20px !important; border: 1px solid rgba(255,255,255,0.08) !important;  
 }  
-[data-testid="stChatInput"] textarea { color: #FFF !important; font-weight: 700 !important; font-size: 15px !important; }  
+[data-testid="stChatInput"] textarea { color: #FFF !important; font-weight: 700 !important; font-size: 14.5px !important; }  
 [data-testid="stChatInput"] button {  
     background: linear-gradient(90deg, #00F5FF, #FF00E6) !important;  
-    background-size: 200% 100% !important;  
-    animation: rainbowFlow 1.5s linear infinite !important;  
-    border-radius: 15px !important; font-weight: 900 !important;  
-    box-shadow: 0 0 20px rgba(0,245,255,0.8) !important;  
-    transition: all 0.2s !important;  
+    border-radius: 12px !important; font-weight: 900 !important;  
 }  
-[data-testid="stChatInput"] button:hover { transform: scale(1.08) rotate(2deg) !important; }  
   
 /* BIO CARD RGB */  
 .bio-card {  
     background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(123,97,255,0.15) 100%) !important;  
     border: 1px solid rgba(255,255,255,0.12) !important;  
-    border-radius: 16px !important;  
-    padding: 12px !important;  
-    margin: 8px 0 !important;  
+    border-radius: 14px !important;  
+    padding: 10px !important;  
+    margin: 6px 0 !important;  
     backdrop-filter: blur(15px) !important;  
 }  
 .bio-avatar {  
-    width: 60px; height: 60px; border-radius: 50%;  
+    width: 50px; height: 50px; border-radius: 50%;  
     background: linear-gradient(135deg, #FF0040, #00F5FF, #FFE600);  
     display: flex; align-items: center; justify-content: center;  
-    font-size: 28px; font-weight: 900; color: white;  
-    margin: 0 auto 10px auto;  
+    font-size: 24px; font-weight: 900; color: white;  
+    margin: 0 auto 8px auto;  
     box-shadow: 0 0 15px rgba(255,0,230,0.5);  
     animation: rainbowFlow 3s linear infinite;  
 }  
@@ -200,23 +174,20 @@ if "chats" not in st.session_state:
 
 def get_active(): return st.session_state.chats[st.session_state.active_chat]
 
+# ===== KONTROL UTAMA & PANEL HANDPHONE DI DALAM FRAME =====
 with st.sidebar:
-    st.markdown("### MasterAI")
+    st.markdown("### MasterAI v10")
     st.markdown('<span class="badge">ULTRA RGB</span> <span class="badge">ALIVE</span>', unsafe_allow_html=True)
     st.divider()
 
-    # ===== BIO CARD PENCIPTA =====  
+    # Bio Card Pencipta di Sidebar
     st.markdown(f"""  
     <div class="bio-card">  
         <div class="bio-avatar">J</div>  
         <div style="text-align:center;">  
-            <div style="color:white !important; font-weight:900; font-size:13px;">{DEVELOPER_BIO['nama']}</div>  
-            <div style="color:#00F5FF !important; font-size:11px; font-weight:700;">{DEVELOPER_BIO['panggilan']} • {DEVELOPER_BIO['umur']}</div>  
-            <div style="color:rgba(255,255,255,0.7) !important; font-size:10px; margin-top:4px;">{DEVELOPER_BIO['sekolah']}</div>  
-            <div style="color:rgba(255,255,255,0.6) !important; font-size:9px; margin-top:3px;">{DEVELOPER_BIO['lokasi']}</div>  
-        </div>  
-        <div style="margin-top:10px; padding-top:10px; border-top: 1px solid rgba(255,255,255,0.1);">  
-            <div style="color:#FFE600 !important; font-size:9px; font-weight:800; letter-spacing:0.05em;">✨ {DEVELOPER_BIO['motto']}</div>  
+            <div style="color:white !important; font-weight:900; font-size:12px;">{DEVELOPER_BIO['nama']}</div>  
+            <div style="color:#00F5FF !important; font-size:10px; font-weight:700;">{DEVELOPER_BIO['panggilan']} • {DEVELOPER_BIO['umur']}</div>  
+            <div style="color:rgba(255,255,255,0.7) !important; font-size:9px; margin-top:3px;">{DEVELOPER_BIO['sekolah']}</div>  
         </div>  
     </div>  
     """, unsafe_allow_html=True)  
@@ -229,50 +200,52 @@ with st.sidebar:
         **Sekolah:** {DEVELOPER_BIO['sekolah']}    
         **Role:** {DEVELOPER_BIO['role']}    
         **Lokasi:** {DEVELOPER_BIO['lokasi']}    
-          
-        **Skill:**  
         """)  
         for skill in DEVELOPER_BIO['skill']:  
             st.markdown(f'<span class="badge">{skill}</span>', unsafe_allow_html=True)  
       
     st.divider()  
 
-    # ===== INPUT NAMA USER & PENGATURAN OBROLAN DI DALAM FRAME/SIDEBAR =====
-    if st.session_state.user_memory["nama"]:  
-        st.success(f"👋 Yo {st.session_state.user_memory['nama']}!")  
-    else:  
-        nama_input = st.text_input("Nama lu siapa bang?", placeholder="Cth: Juan")  
-        if nama_input:  
-            st.session_state.user_memory["nama"] = nama_input  
+# ===== PANEL UTAMA: SAVE NAMA & OBROLAN BARU (MUAT DI HP) =====
+with st.container():
+    col_a, col_b = st.columns([1, 1])
+    with col_a:
+        if st.session_state.user_memory["nama"]:  
+            st.success(f"👋 Yo {st.session_state.user_memory['nama']}!")  
+        else:  
+            nama_input = st.text_input("Nama lu siapa bang?", placeholder="Cth: Juan")  
+            if nama_input:  
+                st.session_state.user_memory["nama"] = nama_input  
+                st.rerun()  
+    with col_b:
+        st.markdown("<div style='margin-top: 2px;'></div>", unsafe_allow_html=True)
+        if st.button("➕ Obrolan Baru", use_container_width=True, type="primary"):  
+            nid = str(uuid.uuid4())  
+            st.session_state.chats[nid] = {"title": f"Chat {len(st.session_state.chats)+1} ✨", "messages": [], "created": time.time()}  
+            st.session_state.active_chat = nid  
             st.rerun()  
 
-    st.markdown("### 💬 Obrolan")  
-    if st.button("➕ Obrolan Baru", use_container_width=True, type="primary"):  
-        nid = str(uuid.uuid4())  
-        st.session_state.chats[nid] = {"title": f"Chat {len(st.session_state.chats)+1} ✨", "messages": [], "created": time.time()}  
-        st.session_state.active_chat = nid  
-        st.rerun()  
-        
-    st.divider()  
-    
-    # Riwayat Chat di dalam Frame/Sidebar (Aman & Rapit untuk Handphone)
+# Pilihan Riwayat Chat Cepat di Main Page (Sangat ramah user HP)
+with st.expander("📂 Pilih / Lihat Riwayat Obrolan Lainnya", expanded=False):
     for cid, chat in sorted(st.session_state.chats.items(), key=lambda x: x[1]["created"], reverse=True):  
-        if st.button(f"{chat['title'][:25]}", key=f"chat_{cid}", use_container_width=True):  
+        if st.button(f"💬 {chat['title'][:30]}", key=f"quick_chat_{cid}", use_container_width=True):  
             st.session_state.active_chat = cid  
             st.rerun()
+
+st.divider()
 
 active = get_active()
 st.title(active["title"])
 
-# ===== EXPANDER BIO DI MAIN PAGE JUGA =====
+# ===== EXPANDER BIO DI MAIN PAGE =====
 with st.expander("🌟 Tentang Pembuat - Jonathan Kristian Sergio Marut (Juan)", expanded=False):
     col1, col2 = st.columns([1, 2])
     with col1:
         st.markdown("""
         <div style="text-align:center;">
-        <div class="bio-avatar" style="width:80px; height:80px; font-size:35px;">J</div>
-        <div style="color:white; font-weight:900; margin-top:6px;">JUAN</div>
-        <div style="color:#00F5FF; font-size:11px;">15 Tahun</div>
+        <div class="bio-avatar" style="width:70px; height:70px; font-size:30px;">J</div>
+        <div style="color:white; font-weight:900; margin-top:4px;">JUAN</div>
+        <div style="color:#00F5FF; font-size:10px;">15 Tahun</div>
         </div>
         """, unsafe_allow_html=True)
     with col2:
@@ -285,8 +258,6 @@ with st.expander("🌟 Tentang Pembuat - Jonathan Kristian Sergio Marut (Juan)",
           
         **Lokasi:** {DEVELOPER_BIO['lokasi']}    
         **Keahlian:** {', '.join(DEVELOPER_BIO['skill'])}  
-          
-        AI ini adalah bukti kalau anak muda Indonesia bisa bikin karya kelas dunia! 🇮🇩✨  
         """)
 
 for m in active["messages"]:
