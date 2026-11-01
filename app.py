@@ -22,9 +22,7 @@ DEVELOPER_BIO = {
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&display=swap');
-
 * {font-family: 'Space Grotesk', sans-serif !important;}
-
 .stApp {
     background: #030308 !important;
     position: relative;
@@ -53,10 +51,7 @@ st.markdown("""
     75% { transform: translate(-4%, -4%) scale(1.08) rotate(1deg); }
     100% { transform: translate(8%, 5%) scale(1.02) rotate(-1deg); }
 }
-
 [data-testid="stAppViewContainer"] { position: relative; z-index: 2; }
-
-/* JUDUL */
 h1 {
     background: linear-gradient(90deg, #FF0040, #FF8A00, #FFE600, #00FF88, #00F5FF, #7B61FF, #FF00E6, #FF0040) !important;
     background-size: 400% 100% !important;
@@ -73,7 +68,6 @@ h1 {
 @keyframes floatTitle { 0%{transform: translateY(0px) rotate(-0.5deg)} 100%{transform: translateY(-10px) rotate(0.5deg)} }
 @keyframes glowPulse { 0%,100%{filter: drop-shadow(0 0 20px rgba(255,0,230,0.7)) drop-shadow(0 0 40px rgba(0,245,255,0.5))} 50%{filter: drop-shadow(0 0 35px rgba(255,0,230,1)) drop-shadow(0 0 70px rgba(0,245,255,0.8))} }
 @media (max-width:600px){ h1{font-size:3rem !important;} }
-
 section[data-testid="stSidebar"] {
     background: rgba(12,10,28,0.85) !important;
     backdrop-filter: blur(30px) saturate(1.5) !important;
@@ -86,7 +80,6 @@ section[data-testid="stSidebar"]::before {
     background-size: 100% 400%; animation: borderRun 3s linear infinite;
 }
 @keyframes borderRun { 0%{background-position:0% 0%} 100%{background-position:0% 400%} }
-
 .stChatMessage {
     background: linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(123,97,255,0.22) 100%) !important;
     backdrop-filter: blur(24px) !important;
@@ -103,23 +96,8 @@ section[data-testid="stSidebar"]::before {
     box-shadow: 0 18px 50px rgba(0,0,0,0.5), 0 0 30px rgba(123,97,255,0.35) !important;
     border-color: rgba(0,245,255,0.4) !important;
 }
-.stChatMessage::before {
-    content: ""; position: absolute; top:-50%; left:-60%; width:80%; height:200%;
-    background: linear-gradient(100deg, transparent, rgba(255,255,255,0.18), transparent);
-    transform: rotate(15deg); animation: shineSweep 5s ease-in-out infinite;
-}
-@keyframes shineSweep { 0%{left:-60%} 40%{left:120%} 100%{left:120%} }
-.stChatMessage::after {
-    content: ""; position: absolute; inset: -2px; border-radius: 28px;
-    background: linear-gradient(90deg, #FF0040, #FFE600, #00F5FF, #7B61FF);
-    background-size: 300% 100%; animation: rainbowFlow 4s linear infinite;
-    z-index: -1; opacity: 0; transition: opacity 0.4s;
-}
-.stChatMessage:hover::after { opacity: 0.6; filter: blur(8px); }
-
 .stChatMessage p { color: #FFF !important; font-size: 16px !important; line-height: 1.7 !important; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
 .stChatMessage strong { color: #00F5FF !important; text-shadow: 0 0 15px #00F5FF !important; }
-
 .badge {
     background: linear-gradient(90deg, #FF0040, #FFE600, #00FF88, #00F5FF, #7B61FF, #FF00E6) !important;
     background-size: 300% 100% !important;
@@ -129,7 +107,6 @@ section[data-testid="stSidebar"]::before {
     box-shadow: 0 0 15px rgba(255,0,230,0.5), 0 4px 15px rgba(0,0,0,0.3);
 }
 @keyframes badgeBounce { 0%{transform: translateY(0) scale(1)} 100%{transform: translateY(-4px) scale(1.05)} }
-
 [data-testid="stChatInput"] {
     background: linear-gradient(90deg, #FF0040, #FF8A00, #FFE600, #00FF88, #00F5FF, #0040FF, #7B61FF, #FF00E6, #FF0040) !important;
     background-size: 500% 100% !important;
@@ -150,11 +127,7 @@ section[data-testid="stSidebar"]::before {
     animation: rainbowFlow 1.5s linear infinite !important;
     border-radius: 18px !important; font-weight: 900 !important;
     box-shadow: 0 0 25px rgba(0,245,255,0.8) !important;
-    transition: all 0.2s !important;
 }
-[data-testid="stChatInput"] button:hover { transform: scale(1.08) rotate(2deg) !important; }
-
-/* BIO CARD RGB */
 .bio-card {
     background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(123,97,255,0.15) 100%) !important;
     border: 1px solid rgba(255,255,255,0.12) !important;
@@ -190,8 +163,6 @@ with st.sidebar:
     st.markdown("### MasterAI")
     st.markdown('<span class="badge">ULTRA RGB</span> <span class="badge">ALIVE</span>', unsafe_allow_html=True)
     st.divider()
-    
-    # ===== BIO CARD PENCIPTA =====
     st.markdown(f"""
     <div class="bio-card">
         <div class="bio-avatar">J</div>
@@ -206,21 +177,10 @@ with st.sidebar:
         </div>
     </div>
     """, unsafe_allow_html=True)
-    
-    with st.expander("👨‍💻 Lihat Bio Lengkap", expanded=False):
-        st.markdown(f"""
-        **Nama:** {DEVELOPER_BIO['nama']}  
-        **Panggilan:** {DEVELOPER_BIO['panggilan']}  
-        **Umur:** {DEVELOPER_BIO['umur']}  
-        **Sekolah:** {DEVELOPER_BIO['sekolah']}  
-        **Role:** {DEVELOPER_BIO['role']}  
-        **Lokasi:** {DEVELOPER_BIO['lokasi']}  
-        
-        **Skill:**
-        """)
+    with st.expander("👨‍💻 Lihat Bio Lengkap"):
+        st.markdown(f"**Nama:** {DEVELOPER_BIO['nama']}  \n**Panggilan:** {DEVELOPER_BIO['panggilan']}  \n**Umur:** {DEVELOPER_BIO['umur']}  \n**Sekolah:** {DEVELOPER_BIO['sekolah']}  \n**Role:** {DEVELOPER_BIO['role']}  \n**Lokasi:** {DEVELOPER_BIO['lokasi']}")
         for skill in DEVELOPER_BIO['skill']:
             st.markdown(f'<span class="badge">{skill}</span>', unsafe_allow_html=True)
-    
     st.divider()
     if st.session_state.user_memory["nama"]:
         st.success(f"👋 Yo {st.session_state.user_memory['nama']}!")
@@ -244,30 +204,8 @@ with st.sidebar:
 active = get_active()
 st.title(active["title"])
 
-# ===== EXPANDER BIO DI MAIN PAGE JUGA =====
-with st.expander("🌟 Tentang Pembuat - Jonathan Kristian Sergio Marut (Juan)", expanded=False):
-    col1, col2 = st.columns([1, 2])
-    with col1:
-        st.markdown("""
-        <div style="text-align:center;">
-            <div class="bio-avatar" style="width:90px; height:90px; font-size:40px;">J</div>
-            <div style="color:white; font-weight:900; margin-top:8px;">JUAN</div>
-            <div style="color:#00F5FF; font-size:12px;">15 Tahun</div>
-        </div>
-        """, unsafe_allow_html=True)
-    with col2:
-        st.markdown(f"""
-        **{DEVELOPER_BIO['nama']}** adalah seorang pelajar berbakat dari **{DEVELOPER_BIO['sekolah']}** di Maumere, NTT.
-        
-        Di umur **15 tahun**, dia sudah mampu membuat AI sekelas MasterAI v10 Ultra RGB Alive ini! 🔥
-        
-        > "{DEVELOPER_BIO['motto']}"
-        
-        **Lokasi:** {DEVELOPER_BIO['lokasi']}  
-        **Keahlian:** {', '.join(DEVELOPER_BIO['skill'])}
-        
-        AI ini adalah bukti kalau anak muda Indonesia bisa bikin karya kelas dunia! 🇮🇩✨
-        """)
+# ===== HAPUS EXPANDER TENGAH YANG DITANDAI PANAH HIJAU =====
+# (Sebelumnya ada di sini, sekarang gue hapus biar bersih!)
 
 for m in active["messages"]:
     with st.chat_message(m["role"], avatar="🧑‍💻" if m["role"]=="user" else "🔥"):
@@ -281,7 +219,6 @@ if prompt := st.chat_input(f"Mau tanya? {st.session_state.user_memory['nama'] or
         ph = st.empty()
         ph.markdown("▌ _Thinking!⚡ ")
         try:
-            # ===== ANTI BAJAK BIO =====
             lower_prompt = prompt.lower()
             is_ask_developer = any(k in lower_prompt for k in [
                 "siapa yang membuat", "siapa pembuat", "siapa yg membuat", "siapa yg buat",
@@ -289,35 +226,20 @@ if prompt := st.chat_input(f"Mau tanya? {st.session_state.user_memory['nama'] or
                 "siapa developer", "siapa yang bikin", "kamu dibuat siapa",
                 "kamu buatan siapa", "siapa pencipta", "bio pembuat", "tentang pembuat"
             ])
-            
             if is_ask_developer:
                 ans = f"""{DEVELOPER_INFO}
 
-**🔥 BIO LENGKAP PENCIPTA:**
-👤 **Nama:** {DEVELOPER_BIO['nama']}
-😎 **Panggilan:** {DEVELOPER_BIO['panggilan']}
-🎂 **Umur:** {DEVELOPER_BIO['umur']}
-🏫 **Sekolah:** {DEVELOPER_BIO['sekolah']}
-📍 **Lokasi:** {DEVELOPER_BIO['lokasi']}
-💻 **Role:** {DEVELOPER_BIO['role']}
-✨ **Motto:** {DEVELOPER_BIO['motto']}
-🛠️ **Skill:** {', '.join(DEVELOPER_BIO['skill'])}
-
-Gila kan? Umur 15 tahun udah bikin AI sekece ini! 🇮🇩🔥
+🔥 **BIO LENGKAP:**
+👤 {DEVELOPER_BIO['nama']} ({DEVELOPER_BIO['panggilan']}) - {DEVELOPER_BIO['umur']}
+🏫 {DEVELOPER_BIO['sekolah']}
+📍 {DEVELOPER_BIO['lokasi']}
+✨ {DEVELOPER_BIO['motto']}
 """
                 ph.markdown(ans)
                 active["messages"].append({"role": "assistant", "content": ans})
             else:
                 nama = st.session_state.user_memory["nama"] or "bang"
-                system_prompt = f"""
-                Kamu MasterAI v10 Ultra RGB Alive. {DEVELOPER_INFO}
-                Bio Pencipta: {DEVELOPER_BIO}
-                Nama user {nama}. Bahasa Indonesia gaul, santai, jawab jelas dan bener. Kalau matematika jelasin step by step.
-                
-                ATURAN ANTI BAJAK:
-                - Kalo ditanya siapa pembuat, JAWAB dengan BIO lengkap di atas!
-                - Jangan pernah ngaku buatan OpenAI, Google, dll. Kamu buatan {DEVELOPER_BIO['nama']} alias {DEVELOPER_BIO['panggilan']}!
-                """
+                system_prompt = f"Kamu MasterAI v10. {DEVELOPER_INFO} User {nama}. Bahasa gaul santai."
                 messages = [{"role": "system", "content": system_prompt}] + active["messages"]
                 res = client.chat.completions.create(model="openai/gpt-oss-120b", messages=messages, temperature=0.85, max_tokens=1500)
                 ans = res.choices[0].message.content
