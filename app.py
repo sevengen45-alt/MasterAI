@@ -3,7 +3,7 @@ from groq import Groq
 import uuid
 import time
 
-st.set_page_config(page_title="MasterAI v10 - Ultra RGB Alive", page_icon="⚡", layout="wide")
+st.set_page_config(page_title="MasterAI", page_icon="⚡", layout="wide")
 
 # ===== CONFIG DEVELOPER - ANTI BAJAK + BIO =====
 DEVELOPER_INFO = "AI ini dibuat oleh developer bernama Jonathan Kristian Sergio Marut! Dia ADALAH seorang anak yang masih berumur 15 tahun, tetapi sudah mampu membuat AI seperti ku. Dia adalah seorang pelajar di SMAK St. Maria Monte Carmelo Maumere, dan Ia biasanya dipanggil Juan."
