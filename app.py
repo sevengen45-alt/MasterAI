@@ -2,7 +2,7 @@ import streamlit as st
 from groq import Groq
 import uuid, time, requests, urllib.parse
 
-st.set_page_config(page_title="MasterAI DALL-E x Midjourney", page_icon="🎨", layout="wide")
+st.set_page_config(page_title="MasterAI", page_icon="⚡", layout="wide", initial_sidebar_state="collapsed")
 
 DEVELOPER_INFO = "AI ini dibuat oleh developer bernama Jonathan Kristian Sergio Marut! 15 tahun, SMAK St. Maria Monte Carmelo Maumere, panggilan Juan."
 DEVELOPER_BIO = {
@@ -11,37 +11,24 @@ DEVELOPER_BIO = {
     "motto": "Umur 15 tahun bukan halangan buat bikin AI keren! 🔥",
 }
 
-# ===== DALL-E & MIDJOURNEY STYLE PROMPT ENGINE =====
-def enhance_prompt(user_prompt, style):
-    """Ubah prompt cupu jadi prompt DALL-E / Midjourney dewa"""
-    if style == "Midjourney v6 🔥 (Paling Artistik)":
-        return f"{user_prompt}, ultra detailed, cinematic lighting, highly detailed, 8k, photorealistic, masterpiece, trending on ArtStation, volumetric lighting, sharp focus, intricate details, --ar 16:9 --style raw --v 6.0"
-    elif style == "DALL-E 3 🎨 (Paling Kreatif)":
-        return f"A highly detailed digital art illustration of {user_prompt}, vibrant colors, ultra realistic, 4k, masterpiece, digital painting, soft lighting, highly detailed, award winning, DALL-E 3 style"
-    elif style == "Anime Midjourney 🌸":
-        return f"anime style {user_prompt}, studio ghibli, makoto shinkai, ultra detailed anime, beautiful lighting, 8k, key visual, anime masterpiece"
-    elif style == "Realistic Photo 📸 (Foto Real)":
-        return f"photograph of {user_prompt}, DSLR, 85mm lens, f/1.8, ultra realistic, natural lighting, 8k, photorealistic, highly detailed skin, real photo"
-    else: # Flux Pro
-        return f"{user_prompt}, masterpiece, best quality, ultra detailed"
+# ===== AUTO IMAGE ENGINE - DALL-E x MIDJOURNEY JADI 1 TANPA OPSI =====
+def auto_enhance_prompt(user_prompt):
+    # Auto jadi Midjourney v6 + DALL-E 3 hybrid - tanpa pilih-pilih
+    return f"{user_prompt}, ultra detailed, cinematic lighting, photorealistic, masterpiece, 8k, highly detailed, DALL-E 3 and Midjourney v6 style, vibrant colors, sharp focus, trending on ArtStation"
 
-def generate_image(prompt, style_name="Midjourney v6 🔥 (Paling Artistik)", w=1024, h=1024):
-    # Enhance dulu prompt nya
-    enhanced = enhance_prompt(prompt, style_name)
+def generate_image_auto(prompt):
+    enhanced = auto_enhance_prompt(prompt)
     encoded = urllib.parse.quote(enhanced)
     seed = uuid.uuid4().int % 999999
-    # Model flux = pesaing Midjourney v6 & DALL-E 3
-    model = "flux" if "Midjourney" in style_name or "DALL-E" in style_name else "flux-realism" if "Realistic" in style_name else "turbo"
-    if "Anime" in style_name: model = "flux-anime"
-    
-    url = f"https://image.pollinations.ai/prompt/{encoded}?width={w}&height={h}&model={model}&seed={seed}&nologo=true&enhance=true&safe=false"
+    # Auto model terbaik - FLUX = Midjourney v6 killer
+    url = f"https://image.pollinations.ai/prompt/{encoded}?width=1024&height=1024&model=flux&seed={seed}&nologo=true&enhance=true&safe=false"
     try:
         r = requests.get(url, timeout=90)
         if r.status_code == 200:
-            return r.content, enhanced, url
-        return None, enhanced, None
+            return r.content, enhanced
+        return None, enhanced
     except:
-        return None, enhanced, None
+        return None, enhanced
 
 st.markdown("""
 <style>
@@ -64,7 +51,27 @@ h1 {
     animation: rainbowFlow 3s linear infinite !important;
 }
 @keyframes rainbowFlow { 0%{background-position:0%} 100%{background-position:400%} }
-section[data-testid="stSidebar"] { background: rgba(12,10,28,0.85) !important; backdrop-filter: blur(30px) !important; border-right: 3px solid #FF00E6 !important; }
+
+/* ===== SIDEBAR KHUSUS HP - MINIMIZE ===== */
+section[data-testid="stSidebar"] {
+    background: rgba(12,10,28,0.92) !important; backdrop-filter: blur(30px) !important;
+    border-right: 3px solid #FF00E6 !important; width: 300px !important;
+}
+
+/* DI DESKTOP: SEMBUNYIKAN TOMBOL SIDEBAR, SIDEBAR SELALU KETUTUP */
+@media (min-width: 769px) {
+    section[data-testid="stSidebar"] { display: none !important; }
+    button[kind="header"] { display: none !important; }
+    [data-testid="collapsedControl"] { display: none !important; }
+}
+
+/* DI HP: SIDEBAR BISA DIGESER */
+@media (max-width: 768px) {
+    section[data-testid="stSidebar"] { display: block !important; width: 85% !important; }
+    button[kind="header"] { display: block !important; background: linear-gradient(90deg, #FF0040, #00F5FF) !important; color: white !important; border-radius: 12px !important; }
+    h1 { font-size: 2.8rem !important; }
+}
+
 .stChatMessage { background: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(123,97,255,0.22)) !important; backdrop-filter: blur(24px) !important; border-radius: 28px !important; border: 1px solid rgba(255,255,255,0.16) !important; }
 .stChatMessage p { color: #FFF !important; font-size: 16px !important; }
 .badge { background: linear-gradient(90deg, #FF0040, #FFE600, #00FF88, #00F5FF, #7B61FF, #FF00E6) !important; padding: 6px 14px; border-radius: 50px; color: white; font-weight: 900; font-size: 11px; display: inline-block; margin: 3px; }
@@ -86,48 +93,34 @@ def get_active(): return st.session_state.chats[st.session_state.active_chat]
 
 with st.sidebar:
     st.markdown("### MasterAI")
-    st.markdown('<span class="badge">DALL-E 3</span> <span class="badge">MIDJOURNEY v6</span> <span class="badge">FLUX PRO</span>', unsafe_allow_html=True)
+    st.markdown('<span class="badge">DALL-E 3</span> <span class="badge">MIDJOURNEY v6</span> <span class="badge">AUTO</span>', unsafe_allow_html=True)
     st.divider()
-    st.markdown("#### 🎨 Pilih Style Gambar")
-    style = st.selectbox("Style", [
-        "Midjourney v6 🔥 (Paling Artistik) - REKOMENDASI",
-        "DALL-E 3 🎨 (Paling Kreatif)",
-        "Realistic Photo 📸 (Foto Real)",
-        "Anime Midjourney 🌸",
-        "Flux Pro ⚡ (Super Cepat)"
-    ], label_visibility="collapsed")
-    st.session_state.img_style = style
     
-    col1, col2 = st.columns(2)
-    with col1:
-        w = st.selectbox("Lebar", [1024, 1280, 720], index=0)
-    with col2:
-        h = st.selectbox("Tinggi", [1024, 720, 1280], index=0)
-    st.session_state.img_size = (w, h)
-    
-    st.markdown(f"<div style='background:rgba(255,255,255,0.08); padding:10px; border-radius:10px; font-size:11px; color:#FFE600 !important;'>💡 Style {style} aktif!<br/>Midjourney = artistik cinematic<br/>DALL-E 3 = kreatif warna-warni<br/>Realistic = kayak foto beneran</div>", unsafe_allow_html=True)
-    
-    st.divider()
-    st.markdown(f"<div class='bio-card'><div class='bio-avatar'>J</div><div style='text-align:center; color:white !important; font-weight:900;'>{DEVELOPER_BIO['nama']}</div><div style='text-align:center; color:#00F5FF !important; font-size:11px;'>{DEVELOPER_BIO['panggilan']} • {DEVELOPER_BIO['umur']}</div></div>", unsafe_allow_html=True)
+    # BIO AJA, TANPA OPSI GAMBAR LAGI!
+    st.markdown(f"<div class='bio-card'><div class='bio-avatar'>J</div><div style='text-align:center; color:white !important; font-weight:900;'>{DEVELOPER_BIO['nama']}</div><div style='text-align:center; color:#00F5FF !important; font-size:11px;'>{DEVELOPER_BIO['panggilan']} • {DEVELOPER_BIO['umur']}</div><div style='text-align:center; color:rgba(255,255,255,0.6) !important; font-size:10px; margin-top:5px;'>{DEVELOPER_BIO['sekolah']}</div></div>", unsafe_allow_html=True)
     
     if st.button("➕ Obrolan Baru", use_container_width=True, type="primary"):
         nid = str(uuid.uuid4())
         st.session_state.chats[nid] = {"title": f"Chat {len(st.session_state.chats)+1}", "messages": [], "created": time.time()}
         st.session_state.active_chat = nid
         st.rerun()
-    st.divider()
-    for cid, chat in sorted(st.session_state.chats.items(), key=lambda x: x[1]["created"], reverse=True)[:15]:
-        if st.button(f"{chat['title'][:28]}", key=f"chat_{cid}", use_container_width=True):
+    
+    st.markdown("#### 💬 Riwayat")
+    for cid, chat in sorted(st.session_state.chats.items(), key=lambda x: x[1]["created"], reverse=True)[:20]:
+        if st.button(f"💬 {chat['title'][:24]}", key=f"chat_{cid}", use_container_width=True):
             st.session_state.active_chat = cid
             st.rerun()
+    
+    st.divider()
+    st.markdown("<div style='font-size:11px; color:rgba(255,255,255,0.5) !important; text-align:center;'>📱 Sidebar cuma muncul di HP<br/>Di laptop auto hide biar clean</div>", unsafe_allow_html=True)
 
 active = get_active()
 st.title("MasterAI")
-st.markdown(f"<div style='text-align:center;'><span class='badge'>BUATAN {DEVELOPER_BIO['nama'].upper()}</span> <span class='badge'>DALL-E 3 + MIDJOURNEY v6</span></div>", unsafe_allow_html=True)
+st.markdown(f"<div style='text-align:center;'><span class='badge'>BUATAN {DEVELOPER_BIO['nama'].upper()}</span> <span class='badge'>DALL-E 3 + MIDJOURNEY AUTO</span></div>", unsafe_allow_html=True)
 
 st.markdown("""
-<div style="text-align:center; background: linear-gradient(90deg, #FF0040, #00F5FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight:900; font-size:18px; margin:10px 0;">
-🎨 KETIK AJA /image [deskripsi] - OTOMATIS JADI DALL-E / MIDJOURNEY!
+<div style="text-align:center; color:rgba(255,255,255,0.7) !important; font-size:13px; margin:10px 0;">
+Ketik aja: <b style="color:#00F5FF !important;">/image pemandangan Maumere</b> atau <b style="color:#FF00E6 !important;">buatkan gambar anime</b> - otomatis jadi karya seni! 🎨
 </div>
 """, unsafe_allow_html=True)
 
@@ -137,18 +130,25 @@ for m in active["messages"]:
             st.markdown(m["content"])
             if m.get("image_data"):
                 st.image(m["image_data"], caption=m.get("caption",""), use_container_width=True)
-                st.download_button("⬇️ Download HD", data=m["image_data"], file_name=f"masterai_{uuid.uuid4().hex[:5]}.jpg", mime="image/jpeg", key=f"dl_{uuid.uuid4()}")
         else:
             st.markdown(m["content"])
 
-if prompt := st.chat_input("Tulis /image anime boy di Maumere sunset ultra detailed... atau chat biasa..."):
-    is_image = prompt.lower().startswith("/image") or prompt.lower().startswith("/gambar") or prompt.lower().startswith("/buat gambar")
+if prompt := st.chat_input("Ketik /image anime boy Maumere... atau chat biasa..."):
+    # AUTO DETEKSI GAMBAR - TANPA OPSI!
+    is_image = False
     clean = prompt
-    if prompt.lower().startswith("/image"): clean = prompt[6:].strip()
-    elif prompt.lower().startswith("/gambar"): clean = prompt[7:].strip()
-    elif prompt.lower().startswith("/buat gambar"): clean = prompt[11:].strip()
-    elif any(k in prompt.lower() for k in ["buatkan gambar", "bikin gambar", "gambar anime", "buatkan foto"]):
+    low = prompt.lower()
+    if low.startswith("/image"): 
         is_image = True
+        clean = prompt[6:].strip()
+    elif low.startswith("/gambar") or low.startswith("/buat gambar") or any(k in low for k in ["buatkan gambar", "bikin gambar", "buatin gambar", "gambar anime", "buatkan foto", "generate image", "create image"]):
+        is_image = True
+        for pref in ["/gambar", "/buat gambar", "buatkan gambar", "bikin gambar", "buatin gambar"]:
+            if low.startswith(pref):
+                clean = prompt[len(pref):].strip()
+                break
+        if clean == prompt: # kalo pake kalimat natural
+            clean = prompt
     
     if len(active["messages"]) == 0: active["title"] = clean[:35]
     active["messages"].append({"role": "user", "content": prompt})
@@ -157,36 +157,29 @@ if prompt := st.chat_input("Tulis /image anime boy di Maumere sunset ultra detai
     with st.chat_message("assistant", avatar="🎨"):
         if is_image and clean:
             ph = st.empty()
-            style = st.session_state.get("img_style", "Midjourney v6 🔥 (Paling Artistik)")
-            w,h = st.session_state.get("img_size", (1024,1024))
-            ph.markdown(f"🎨 **Mode:** {style}\n\n📝 **Prompt asli:** {clean}\n\n⚡ _Enhancing prompt jadi DALL-E/Midjourney style..._")
-            time.sleep(1)
-            ph.markdown(f"🎨 **Generating dengan {style}...**\n\n⏳ _Melukis... 10-20 detik, sabar ya Juan..._ 🔥")
+            ph.markdown(f"🎨 **Auto DALL-E x Midjourney Mode**\n\n📝 Prompt: `{clean}`\n\n⚡ _Sedang melukis masterpiece... 10-15 detik..._")
             
-            img_bytes, enhanced_prompt, url = generate_image(clean, style_name=style, w=w, h=h)
+            img_bytes, enhanced = generate_image_auto(clean)
             
             if img_bytes:
                 ph.empty()
-                st.success(f"✅ Jadi! Style: {style}")
-                st.markdown(f"<div style='color:#AAA !important; font-size:11px;'>Enhanced prompt: {enhanced_prompt[:120]}...</div>", unsafe_allow_html=True)
-                st.image(img_bytes, caption=f"{style} | {clean}", use_container_width=True)
-                
+                st.image(img_bytes, caption=f"Auto DALL-E x Midjourney | {clean}", use_container_width=True)
                 active["messages"].append({
                     "role": "assistant", 
-                    "content": f"🎨 **Berhasil!**\n\n**Style:** {style}\n**Prompt:** {clean}\n**Enhanced:** {enhanced_prompt[:150]}...", 
+                    "content": f"🎨 **Berhasil!** Prompt: {clean}", 
                     "type": "image", "image_data": img_bytes, "caption": clean
                 })
-                st.download_button("⬇️ Download HD Quality", data=img_bytes, file_name=f"masterai_{style[:4]}_{uuid.uuid4().hex[:4]}.jpg", mime="image/jpeg")
+                st.download_button("⬇️ Download HD", data=img_bytes, file_name=f"masterai_{uuid.uuid4().hex[:5]}.jpg", mime="image/jpeg", key=f"dl_{uuid.uuid4()}")
             else:
-                ph.error("❌ Gagal, coba prompt lain atau ganti style!")
+                ph.error("❌ Gagal, coba prompt lain!")
         else:
             ph = st.empty()
             ph.markdown("▌ _Thinking..._ ⚡")
             try:
-                if "siapa pembuat" in prompt.lower():
+                if "siapa pembuat" in low:
                     ans = f"{DEVELOPER_INFO} - {DEVELOPER_BIO['nama']} 🔥"
                 else:
-                    sys = f"Kamu MasterAI DALL-E x Midjourney. {DEVELOPER_INFO} Jawab gaul Indonesia."
+                    sys = f"Kamu MasterAI DALL-E x Midjourney Auto. {DEVELOPER_INFO} Jawab gaul. Kalo user minta gambar, bilang: ketik /image [deskripsi]"
                     res = client.chat.completions.create(model="openai/gpt-oss-120b", messages=[{"role":"system","content":sys},{"role":"user","content":prompt}], max_tokens=1000)
                     ans = res.choices[0].message.content
                 ph.markdown(ans)
