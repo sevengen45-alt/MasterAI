@@ -1,305 +1,340 @@
 import streamlit as st
 from groq import Groq
-import uuid, time, requests, urllib.parse, io, base64
-from PIL import Image
-import fitz
-import docx
+import uuid
+import time
 
-st.set_page_config(page_title="MasterAI Fixed", page_icon="👁️", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="MasterAI", page_icon="⚡", layout="wide")
 
-DEVELOPER_INFO = "AI ini dibuat oleh Jonathan Kristian Sergio Marut! 15 tahun, SMAK Monte Carmelo Maumere, panggilan Juan."
-DEVELOPER_BIO = {"nama": "Jonathan Kristian Sergio Marut", "panggilan": "Juan"}
+# ===== CONFIG DEVELOPER - ANTI BAJAK + BIO =====
+DEVELOPER_INFO = "AI ini dibuat oleh developer bernama Jonathan Kristian Sergio Marut! Dia ADALAH seorang anak yang masih berumur 15 tahun, tetapi sudah mampu membuat AI seperti ku. Dia adalah seorang pelajar di SMAK St. Maria Monte Carmelo Maumere, dan Ia biasanya dipanggil Juan."
 
-def image_to_base64(img):
-    buffered = io.BytesIO()
-    img.save(buffered, format="JPEG")
-    return base64.b64encode(buffered.getvalue()).decode()
-
-def read_pdf_text(file_bytes):
-    try:
-        doc = fitz.open(stream=file_bytes, filetype="pdf")
-        text = ""
-        for page in doc[:3]: text += page.get_text()
-        return text[:6000]
-    except: return ""
-
-def read_docx_text(file_bytes):
-    try:
-        doc = docx.Document(io.BytesIO(file_bytes))
-        return "\n".join([p.text for p in doc.paragraphs])[:6000]
-    except: return ""
-
-# ===== VISION FIX - MODEL YANG MASIH AKTIF DI GROQ =====
-def analyze_image_with_groq(client, img_base64, prompt):
-    # Coba 3 model vision yang masih hidup
-    models_to_try = [
-        "meta-llama/llama-4-scout-17b-16e-instruct",
-        "llama-3.2-11b-vision-preview",
-        "llama-3.2-90b-vision-preview"
-    ]
-    for model_name in models_to_try:
-        try:
-            res = client.chat.completions.create(
-                model=model_name,
-                messages=[{
-                    "role": "user",
-                    "content": [
-                        {"type": "text", "text": prompt},
-                        {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{img_base64}"}}
-                    ]
-                }],
-                max_tokens=1200
-            )
-            return res.choices[0].message.content
-        except Exception as e:
-            continue
-    
-    # Jika semua vision gagal, fallback jelaskan manual
-    return f"Gambar terdeteksi! Deskripsi: Foto seseorang dengan jas, background netral. (Vision API sedang maintenance, tapi file sudah terbaca. Coba tanya 'ubah baju jadi merah' langsung!)"
-
-def generate_realistic_image(prompt, mode="realistic"):
-    if mode == "change_color":
-        enhanced = f"same person same pose, {prompt}, only change clothing color, ultra realistic, photorealistic, 8k"
-    elif mode == "swap_clothes":
-        enhanced = f"clothing swap, {prompt}, keep faces identical, swap outfit, photorealistic, 8k"
-    else:
-        enhanced = f"ultra realistic photograph of {prompt}, DSLR 85mm f/1.4, natural skin, hyperrealistic, 8k, Gemini ChatGPT style"
-    encoded = urllib.parse.quote(enhanced)
-    seed = uuid.uuid4().int % 999999
-    url = f"https://image.pollinations.ai/prompt/{encoded}?width=1024&height=1024&model=flux-realism&seed={seed}&nologo=true&enhance=true"
-    try:
-        r = requests.get(url, timeout=90)
-        return (r.content, enhanced) if r.status_code == 200 else (None, enhanced)
-    except: return None, enhanced
+DEVELOPER_BIO = {
+    "nama": "Jonathan Kristian Sergio Marut",
+    "panggilan": "Juan",
+    "umur": "15 Tahun",
+    "sekolah": "SMAK St. Maria Monte Carmelo Maumere",
+    "role": "AI Developer & Pelajar",
+    "lokasi": "Maumere, NTT, Indonesia 🇮🇩",
+    "motto": "Umur 15 tahun bukan halangan buat bikin AI keren! 🔥",
+    "skill": ["Python", "Streamlit", "Groq AI", "UI/UX Design", "Prompt Engineering"]
+}
 
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&display=swap');
-* {font-family: 'Space Grotesk', sans-serif !important;}
-.stApp { background: #030308 !important; }
-.stApp::before { content: ""; position: fixed; width: 200%; height: 200%; top: -50%; left: -50%; background: radial-gradient(circle at 20% 30%, rgba(255,0,128,0.55) 0%, transparent 35%), radial-gradient(circle at 80% 20%, rgba(0,245,255,0.55) 0%, transparent 40%); animation: orbDance 20s ease-in-out infinite alternate; filter: blur(18px); z-index: 0; pointer-events: none; }
-@keyframes orbDance { 0%{transform:translate(0,0)} 100%{transform:translate(8%,5%)} }
-[data-testid="stAppViewContainer"] { position: relative; z-index: 2; }
-h1 { background: linear-gradient(90deg, #FF0040, #FF8A00, #FFE600, #00FF88, #00F5FF, #7B61FF, #FF00E6, #FF0040) !important; background-size: 400% 100% !important; -webkit-background-clip: text !important; -webkit-text-fill-color: transparent !important; text-align: center !important; font-weight: 900 !important; font-size: 3.5rem !important; animation: rainbowFlow 3s linear infinite !important; }
-@keyframes rainbowFlow { 0%{background-position:0%} 100%{background-position:400%} }
-@media (min-width: 769px) { section[data-testid="stSidebar"] { display: none !important; } button[kind="header"] { display: none !important; } }
-@media (max-width: 768px) { section[data-testid="stSidebar"] { display: block !important; width: 85% !important; background: rgba(12,10,28,0.95) !important; } h1 { font-size: 2.5rem !important; } }
-.stChatMessage { background: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(123,97,255,0.22)) !important; backdrop-filter: blur(24px) !important; border-radius: 28px !important; border: 1px solid rgba(255,255,255,0.16) !important; }
-.stChatMessage p { color: #FFF !important; font-size: 15px !important; }
-.badge { background: linear-gradient(90deg, #FF0040, #FFE600, #00FF88, #00F5FF, #7B61FF, #FF00E6) !important; padding: 6px 14px; border-radius: 50px; color: white; font-weight: 900; font-size: 11px; display: inline-block; margin: 3px; }
 
-/* ===== CHAT BAR CUSTOM KAYAK CHATGPT - ATTACH DI SAMPING PANAH ===== */
-.custom-chat-bar {
-    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-    width: 92%; max-width: 780px;
-    background: linear-gradient(90deg, #FF0040, #00F5FF);
-    padding: 4px; border-radius: 30px;
-    z-index: 1000;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+* {font-family: 'Space Grotesk', sans-serif !important;}
+
+/* ===== FIX: kembalikan font ikon Streamlit (biar tulisan arrow_right dkk hilang) ===== */
+[data-testid="stIconMaterial"],
+span[data-testid="stIconMaterial"],
+.material-icons,
+[class*="material-symbols"] {
+    font-family: 'Material Symbols Rounded' !important;
 }
-.custom-chat-inner {
-    background: rgba(10,10,22,0.98); border-radius: 26px;
-    display: flex; align-items: center; padding: 8px 12px; gap: 8px;
+
+.stApp {
+    background: #030308 !important;
+    position: relative;
+    overflow: hidden;
 }
-.attach-btn {
-    background: rgba(255,255,255,0.1) !important; border: 1px solid rgba(255,255,255,0.2) !important;
-    border-radius: 12px !important; min-width: 45px !important; height: 45px !important;
+.stApp::before {
+    content: "";
+    position: fixed;
+    width: 200%; height: 200%;
+    top: -50%; left: -50%;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(255,0,128,0.55) 0%, transparent 35%),
+        radial-gradient(circle at 80% 20%, rgba(0,245,255,0.55) 0%, transparent 40%),
+        radial-gradient(circle at 50% 80%, rgba(255,230,0,0.45) 0%, transparent 40%),
+        radial-gradient(circle at 10% 80%, rgba(130,0,255,0.6) 0%, transparent 38%),
+        radial-gradient(circle at 90% 85%, rgba(0,255,136,0.4) 0%, transparent 35%);
+    animation: orbDance 20s ease-in-out infinite alternate;
+    filter: blur(18px) saturate(1.3);
+    z-index: 0;
+    pointer-events: none;
 }
-.file-preview-box {
-    background: rgba(255,255,255,0.08); border: 1px dashed rgba(0,245,255,0.4);
-    border-radius: 15px; padding: 10px; margin: 10px 0;
+@keyframes orbDance {
+    0% { transform: translate(0,0) scale(1) rotate(0deg); }
+    25% { transform: translate(-8%, 6%) scale(1.1) rotate(2deg); }
+    50% { transform: translate(6%, -8%) scale(0.95) rotate(-2deg); }
+    75% { transform: translate(-4%, -4%) scale(1.08) rotate(1deg); }
+    100% { transform: translate(8%, 5%) scale(1.02) rotate(-1deg); }
+}
+
+[data-testid="stAppViewContainer"] { position: relative; z-index: 2; }
+
+/* JUDUL */
+h1 {
+    background: linear-gradient(90deg, #FF0040, #FF8A00, #FFE600, #00FF88, #00F5FF, #7B61FF, #FF00E6, #FF0040) !important;
+    background-size: 400% 100% !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    text-align: center !important;
+    font-weight: 900 !important;
+    font-size: 5rem !important;
+    letter-spacing: -0.06em !important;
+    animation: rainbowFlow 3s linear infinite, floatTitle 3s ease-in-out infinite alternate, glowPulse 2s ease-in-out infinite !important;
+    filter: drop-shadow(0 0 20px rgba(255,0,230,0.7)) drop-shadow(0 0 40px rgba(0,245,255,0.5));
+}
+@keyframes rainbowFlow { 0%{background-position:0%} 100%{background-position:400%} }
+@keyframes floatTitle { 0%{transform: translateY(0px) rotate(-0.5deg)} 100%{transform: translateY(-10px) rotate(0.5deg)} }
+@keyframes glowPulse { 0%,100%{filter: drop-shadow(0 0 20px rgba(255,0,230,0.7)) drop-shadow(0 0 40px rgba(0,245,255,0.5))} 50%{filter: drop-shadow(0 0 35px rgba(255,0,230,1)) drop-shadow(0 0 70px rgba(0,245,255,0.8))} }
+@media (max-width:600px){ h1{font-size:3rem !important;} }
+
+section[data-testid="stSidebar"] {
+    background: rgba(12,10,28,0.85) !important;
+    backdrop-filter: blur(30px) saturate(1.5) !important;
+    border-right: 3px solid transparent !important;
+    position: relative;
+}
+section[data-testid="stSidebar"]::before {
+    content: ""; position: absolute; inset: 0; right: -3px; left: auto; width: 3px;
+    background: linear-gradient(180deg, #FF0040, #FF8A00, #FFE600, #00FF88, #00F5FF, #7B61FF, #FF00E6, #FF0040);
+    background-size: 100% 400%; animation: borderRun 3s linear infinite;
+}
+@keyframes borderRun { 0%{background-position:0% 0%} 100%{background-position:0% 400%} }
+
+.stChatMessage {
+    background: linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(123,97,255,0.22) 100%) !important;
+    backdrop-filter: blur(24px) !important;
+    border-radius: 28px !important;
+    border: 1px solid rgba(255,255,255,0.16) !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15) !important;
+    position: relative; overflow: hidden;
+    animation: popIn 0.7s cubic-bezier(0.34,1.56,0.64,1) !important;
+    transition: all 0.35s ease !important;
+}
+@keyframes popIn { 0%{transform: translateY(20px) scale(0.92); opacity:0} 100%{transform: translateY(0) scale(1); opacity:1} }
+.stChatMessage:hover {
+    transform: translateY(-3px) scale(1.01) !important;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.5), 0 0 30px rgba(123,97,255,0.35) !important;
+    border-color: rgba(0,245,255,0.4) !important;
+}
+.stChatMessage::before {
+    content: ""; position: absolute; top:-50%; left:-60%; width:80%; height:200%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,0.18), transparent);
+    transform: rotate(15deg); animation: shineSweep 5s ease-in-out infinite;
+}
+@keyframes shineSweep { 0%{left:-60%} 40%{left:120%} 100%{left:120%} }
+.stChatMessage::after {
+    content: ""; position: absolute; inset: -2px; border-radius: 28px;
+    background: linear-gradient(90deg, #FF0040, #FFE600, #00F5FF, #7B61FF);
+    background-size: 300% 100%; animation: rainbowFlow 4s linear infinite;
+    z-index: -1; opacity: 0; transition: opacity 0.4s;
+}
+.stChatMessage:hover::after { opacity: 0.6; filter: blur(8px); }
+
+.stChatMessage p { color: #FFF !important; font-size: 16px !important; line-height: 1.7 !important; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+.stChatMessage strong { color: #00F5FF !important; text-shadow: 0 0 15px #00F5FF !important; }
+
+.badge {
+    background: linear-gradient(90deg, #FF0040, #FFE600, #00FF88, #00F5FF, #7B61FF, #FF00E6) !important;
+    background-size: 300% 100% !important;
+    animation: rainbowFlow 2s linear infinite, badgeBounce 2s ease-in-out infinite alternate !important;
+    padding: 6px 16px; border-radius: 50px; color: white; font-weight: 900; font-size: 11px;
+    display: inline-block; margin: 4px; letter-spacing: 0.08em;
+    box-shadow: 0 0 15px rgba(255,0,230,0.5), 0 4px 15px rgba(0,0,0,0.3);
+}
+@keyframes badgeBounce { 0%{transform: translateY(0) scale(1)} 100%{transform: translateY(-4px) scale(1.05)} }
+
+[data-testid="stChatInput"] {
+    background: linear-gradient(90deg, #FF0040, #FF8A00, #FFE600, #00FF88, #00F5FF, #0040FF, #7B61FF, #FF00E6, #FF0040) !important;
+    background-size: 500% 100% !important;
+    animation: rainbowFlow 1.2s linear infinite, inputBreath 2s ease-in-out infinite !important;
+    padding: 4px !important; border-radius: 30px !important;
+    box-shadow: 0 0 30px rgba(255,0,128,0.6), 0 0 60px rgba(0,245,255,0.5), 0 12px 40px rgba(0,0,0,0.5) !important;
+    max-width: 780px !important; margin: 0 auto !important;
+}
+@keyframes inputBreath { 0%,100%{transform: scale(1); box-shadow: 0 0 30px rgba(255,0,128,0.6), 0 0 60px rgba(0,245,255,0.5)} 50%{transform: scale(1.02); box-shadow: 0 0 45px rgba(255,0,128,0.9), 0 0 90px rgba(0,245,255,0.7)} }
+[data-testid="stChatInput"] > div {
+    background: rgba(10,10,22,0.95) !important; backdrop-filter: blur(20px) !important;
+    border-radius: 26px !important; border: 1px solid rgba(255,255,255,0.08) !important;
+}
+[data-testid="stChatInput"] textarea { color: #FFF !important; font-weight: 700 !important; font-size: 16.5px !important; }
+[data-testid="stChatInput"] button {
+    background: linear-gradient(90deg, #00F5FF, #FF00E6) !important;
+    background-size: 200% 100% !important;
+    animation: rainbowFlow 1.5s linear infinite !important;
+    border-radius: 18px !important; font-weight: 900 !important;
+    box-shadow: 0 0 25px rgba(0,245,255,0.8) !important;
+    transition: all 0.2s !important;
+}
+[data-testid="stChatInput"] button:hover { transform: scale(1.08) rotate(2deg) !important; }
+
+/* BIO CARD RGB */
+.bio-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(123,97,255,0.15) 100%) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    border-radius: 20px !important;
+    padding: 16px !important;
+    margin: 10px 0 !important;
+    backdrop-filter: blur(15px) !important;
+}
+.bio-avatar {
+    width: 70px; height: 70px; border-radius: 50%;
+    background: linear-gradient(135deg, #FF0040, #00F5FF, #FFE600);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; font-weight: 900; color: white;
+    margin: 0 auto 12px auto;
+    box-shadow: 0 0 20px rgba(255,0,230,0.5);
+    animation: rainbowFlow 3s linear infinite;
 }
 </style>
 """, unsafe_allow_html=True)
 
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
+
+if "user_memory" not in st.session_state:
+    st.session_state.user_memory = {"nama": None}
 if "chats" not in st.session_state:
     fid = str(uuid.uuid4())
-    st.session_state.chats = {fid: {"title": "MasterAI Fixed", "messages": [], "created": time.time()}}
+    st.session_state.chats = {fid: {"title": "Siap Memulai Obrolan!", "messages": [], "created": time.time()}}
     st.session_state.active_chat = fid
-if "uploaded_data" not in st.session_state:
-    st.session_state.uploaded_data = []
 
 def get_active(): return st.session_state.chats[st.session_state.active_chat]
 
 with st.sidebar:
     st.markdown("### MasterAI")
-    st.markdown('<span class="badge">FIXED</span> <span class="badge">VISION OK</span>', unsafe_allow_html=True)
+    st.markdown('<span class="badge">ULTRA RGB</span> <span class="badge">ALIVE</span>', unsafe_allow_html=True)
     st.divider()
-    st.markdown(f"<div style='text-align:center; color:white !important; font-weight:900;'>{DEVELOPER_BIO['nama']}</div>", unsafe_allow_html=True)
+    
+    # ===== BIO CARD PENCIPTA =====
+    st.markdown(f"""
+    <div class="bio-card">
+        <div class="bio-avatar">J</div>
+        <div style="text-align:center;">
+            <div style="color:white !important; font-weight:900; font-size:14px;">{DEVELOPER_BIO['nama']}</div>
+            <div style="color:#00F5FF !important; font-size:12px; font-weight:700;">{DEVELOPER_BIO['panggilan']} • {DEVELOPER_BIO['umur']}</div>
+            <div style="color:rgba(255,255,255,0.7) !important; font-size:11px; margin-top:6px;">{DEVELOPER_BIO['sekolah']}</div>
+            <div style="color:rgba(255,255,255,0.6) !important; font-size:10px; margin-top:4px;">{DEVELOPER_BIO['lokasi']}</div>
+        </div>
+        <div style="margin-top:12px; padding-top:12px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <div style="color:#FFE600 !important; font-size:10px; font-weight:800; letter-spacing:0.05em;">✨ {DEVELOPER_BIO['motto']}</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    with st.expander("👨‍💻 Lihat Bio Lengkap", expanded=False):
+        st.markdown(f"""
+        **Nama:** {DEVELOPER_BIO['nama']}  
+        **Panggilan:** {DEVELOPER_BIO['panggilan']}  
+        **Umur:** {DEVELOPER_BIO['umur']}  
+        **Sekolah:** {DEVELOPER_BIO['sekolah']}  
+        **Role:** {DEVELOPER_BIO['role']}  
+        **Lokasi:** {DEVELOPER_BIO['lokasi']}  
+        
+        **Skill:**
+        """)
+        for skill in DEVELOPER_BIO['skill']:
+            st.markdown(f'<span class="badge">{skill}</span>', unsafe_allow_html=True)
+    
+    st.divider()
+    if st.session_state.user_memory["nama"]:
+        st.success(f"👋 Yo {st.session_state.user_memory['nama']}!")
+    else:
+        nama_input = st.text_input("Nama lu siapa bang?", placeholder="Cth: Juan")
+        if nama_input:
+            st.session_state.user_memory["nama"] = nama_input
+            st.rerun()
+    st.markdown("### 💬 Obrolan")
     if st.button("➕ Obrolan Baru", use_container_width=True, type="primary"):
         nid = str(uuid.uuid4())
-        st.session_state.chats[nid] = {"title": f"Chat {len(st.session_state.chats)+1}", "messages": [], "created": time.time()}
+        st.session_state.chats[nid] = {"title": f"Chat {len(st.session_state.chats)+1} ✨", "messages": [], "created": time.time()}
         st.session_state.active_chat = nid
-        st.session_state.uploaded_data = []
         st.rerun()
+    st.divider()
+    for cid, chat in sorted(st.session_state.chats.items(), key=lambda x: x[1]["created"], reverse=True):
+        if st.button(f"{chat['title'][:28]}", key=f"chat_{cid}", use_container_width=True):
+            st.session_state.active_chat = cid
+            st.rerun()
 
 active = get_active()
-st.title("MasterAI")
-st.markdown("<div style='text-align:center;'><span class='badge'>FIX ERROR 404</span> <span class='badge'>UPLOAD DI SAMPING PANAH</span></div>", unsafe_allow_html=True)
+st.title(active["title"])
 
-# Tampilkan history
+# ===== EXPANDER BIO DI MAIN PAGE JUGA =====
+with st.expander("🌟 Tentang Pembuat - Jonathan Kristian Sergio Marut (Juan)", expanded=False):
+    col1, col2 = st.columns([1, 2])
+    with col1:
+        st.markdown("""
+        <div style="text-align:center;">
+            <div class="bio-avatar" style="width:90px; height:90px; font-size:40px;">J</div>
+            <div style="color:white; font-weight:900; margin-top:8px;">JUAN</div>
+            <div style="color:#00F5FF; font-size:12px;">15 Tahun</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with col2:
+        st.markdown(f"""
+        **{DEVELOPER_BIO['nama']}** adalah seorang pelajar berbakat dari **{DEVELOPER_BIO['sekolah']}** di Maumere, NTT.
+        
+        Di umur **15 tahun**, dia sudah mampu membuat AI sekelas MasterAI v10 Ultra RGB Alive ini! 🔥
+        
+        > "{DEVELOPER_BIO['motto']}"
+        
+        **Lokasi:** {DEVELOPER_BIO['lokasi']}  
+        **Keahlian:** {', '.join(DEVELOPER_BIO['skill'])}
+        
+        AI ini adalah bukti kalau anak muda Indonesia bisa bikin karya kelas dunia! 🇮🇩✨
+        """)
+
 for m in active["messages"]:
-    with st.chat_message(m["role"], avatar="🧑‍💻" if m["role"]=="user" else "👁️"):
-        if m.get("type") == "image" and m.get("image_data"):
-            st.markdown(m["content"])
-            st.image(m["image_data"], use_container_width=True)
-        elif m.get("type") == "upload" and m.get("image_data"):
-            st.markdown(m["content"])
-            st.image(m["image_data"], width=200)
-        else:
-            st.markdown(m["content"])
+    with st.chat_message(m["role"], avatar="🧑‍💻" if m["role"]=="user" else "🔥"):
+        st.markdown(m["content"])
 
-# ===== PREVIEW FILE YANG UDAH DIUPLOAD (DI ATAS CHAT BAR) =====
-if st.session_state.uploaded_data:
-    st.markdown("#### 📎 File Terupload:")
-    cols = st.columns(3)
-    for idx, item in enumerate(st.session_state.uploaded_data[-6:]):
-        with cols[idx % 3]:
-            if item["type"] == "image":
-                st.image(item["image"], caption=item["name"][:15], width=150)
-                st.caption(f"✅ {item['name'][:20]}")
-            elif item["type"] == "video":
-                st.video(item["bytes"])
+if prompt := st.chat_input(f"Mau tanya? {st.session_state.user_memory['nama'] or 'Silahkan!'} 😎🔥"):
+    if len(active["messages"]) == 0: active["title"] = prompt[:35]
+    active["messages"].append({"role": "user", "content": prompt})
+    with st.chat_message("user", avatar="🧑‍💻"): st.markdown(prompt)
+    with st.chat_message("assistant", avatar="🔥"):
+        ph = st.empty()
+        ph.markdown("▌ _Thinking!⚡ ")
+        try:
+            # ===== ANTI BAJAK BIO =====
+            lower_prompt = prompt.lower()
+            is_ask_developer = any(k in lower_prompt for k in [
+                "siapa yang membuat", "siapa pembuat", "siapa yg membuat", "siapa yg buat",
+                "who made you", "who created you", "dibuat siapa", "buatan siapa",
+                "siapa developer", "siapa yang bikin", "kamu dibuat siapa",
+                "kamu buatan siapa", "siapa pencipta", "bio pembuat", "tentang pembuat"
+            ])
+            
+            if is_ask_developer:
+                ans = f"""{DEVELOPER_INFO}
+
+**🔥 BIO LENGKAP PENCIPTA:**
+👤 **Nama:** {DEVELOPER_BIO['nama']}
+😎 **Panggilan:** {DEVELOPER_BIO['panggilan']}
+🎂 **Umur:** {DEVELOPER_BIO['umur']}
+🏫 **Sekolah:** {DEVELOPER_BIO['sekolah']}
+📍 **Lokasi:** {DEVELOPER_BIO['lokasi']}
+💻 **Role:** {DEVELOPER_BIO['role']}
+✨ **Motto:** {DEVELOPER_BIO['motto']}
+🛠️ **Skill:** {', '.join(DEVELOPER_BIO['skill'])}
+
+Gila kan? Umur 15 tahun udah bikin AI sekece ini! 🇮🇩🔥
+"""
+                ph.markdown(ans)
+                active["messages"].append({"role": "assistant", "content": ans})
             else:
-                st.info(f"📄 {item['name']}")
-
-# ===== CHAT BAR BARU - UPLOAD DI SAMPING PANAH KAYAK CHATGPT =====
-st.markdown("<div style='height: 100px;'></div>", unsafe_allow_html=True) # spacer
-
-# Custom bar di bawah
-with st.container():
-    c1, c2, c3 = st.columns([1, 6, 1])
-    
-    with c1:
-        # TOMBOL ATTACH DI SAMPING KIRI PANAH
-        uploaded_files = st.file_uploader("📎", type=["png","jpg","jpeg","webp","mp4","mov","pdf","docx","txt"], accept_multiple_files=True, label_visibility="collapsed", key="attach_uploader")
-        st.markdown("<div style='text-align:center; font-size:10px; color:rgba(255,255,255,0.5) !important;'>📎</div>", unsafe_allow_html=True)
-    
-    with c2:
-        prompt = st.text_input("Pesan", placeholder="Upload foto dulu, lalu tanya 'siapa ini?' / '/image buatkan...'", label_visibility="collapsed", key="custom_prompt")
-    
-    with c3:
-        send = st.button("↑", key="send_btn", use_container_width=True, type="primary")
-
-# Handle upload file baru
-if uploaded_files:
-    for file in uploaded_files:
-        file_bytes = file.read()
-        fid = str(uuid.uuid4())[:6]
-        if file.type.startswith("image/"):
-            try:
-                img = Image.open(io.BytesIO(file_bytes)).convert("RGB")
-                b64 = image_to_base64(img)
-                # Langsung analisa biar gak error kayak di screenshot lu
-                analysis = analyze_image_with_groq(client, b64, "Jelaskan orang/benda di gambar ini secara singkat. Warna baju apa? Pose bagaimana?")
-                st.session_state.uploaded_data.append({"id": fid, "name": file.name, "type": "image", "image": img, "b64": b64, "analysis": analysis})
-                st.toast(f"✅ Gambar {file.name} terbaca!")
-            except Exception as e:
-                st.error(f"Gagal {file.name}: {e}")
-        elif file.type.startswith("video/"):
-            st.session_state.uploaded_data.append({"id": fid, "name": file.name, "type": "video", "bytes": file_bytes})
-            st.toast(f"✅ Video {file.name} terupload!")
-        else:
-            text = read_pdf_text(file_bytes) if "pdf" in file.type else read_docx_text(file_bytes) if "docx" in file.type else file_bytes.decode('utf-8', errors='ignore')[:6000]
-            st.session_state.uploaded_data.append({"id": fid, "name": file.name, "type": "doc", "text": text})
-            st.toast(f"✅ Dokumen {file.name} terbaca!")
-    # Rerun biar preview muncul
-    time.sleep(0.5)
-    st.rerun()
-
-# Handle kirim pesan (dari text_input custom ATAU tombol)
-if (send and prompt) or (prompt and st.session_state.get("custom_prompt") and prompt != ""):
-    if prompt.strip() == "": 
-        pass
-    else:
-        if len(active["messages"]) == 0: active["title"] = prompt[:35]
-        
-        # Simpan
-        active["messages"].append({"role": "user", "content": prompt})
-        
-        with st.chat_message("user", avatar="🧑‍💻"):
-            st.markdown(prompt)
-            if st.session_state.uploaded_data:
-                for item in st.session_state.uploaded_data[-1:]:
-                    if item["type"] == "image":
-                        st.image(item["image"], width=200)
-        
-        with st.chat_message("assistant", avatar="👁️"):
-            ph = st.empty()
-            low = prompt.lower()
-            has_files = len(st.session_state.uploaded_data) > 0
-            last_image = next((x for x in reversed(st.session_state.uploaded_data) if x["type"]=="image"), None)
-            last_doc = next((x for x in reversed(st.session_state.uploaded_data) if x["type"]=="doc"), None)
-            
-            # === JAWAB DENGAN VISION ===
-            if has_files and any(k in low for k in ["siapa", "apa isi", "jelaskan gambar", "orang ini", "diatas", "baju warna"]):
-                if last_image:
-                    ph.markdown(f"👁️ _Membaca {last_image['name']}..._")
-                    ans = analyze_image_with_groq(client, last_image["b64"], prompt + " Jelaskan detail, termasuk pakaian.")
-                    ph.markdown(f"👁️ **Hasil Baca:**\n\n{ans}\n\n✅ File: {last_image['name']}")
-                    active["messages"].append({"role": "assistant", "content": ans})
-                else:
-                    ph.markdown("Upload gambar dulu di tombol 📎 samping panah!")
-            
-            elif has_files and any(k in low for k in ["rangkum", "isi dokumen", "baca pdf"]):
-                if last_doc:
-                    ph.markdown(f"📄 _Membaca {last_doc['name']}..._")
-                    try:
-                        res = client.chat.completions.create(model="openai/gpt-oss-120b", messages=[{"role": "system", "content": "Rangkum dokumen."}, {"role": "user", "content": f"Dokumen {last_doc['name']}: {last_doc['text'][:6000]}\nPertanyaan: {prompt}"}], max_tokens=1200)
-                        ans = res.choices[0].message.content
-                        ph.markdown(f"📄 **Rangkuman {last_doc['name']}:**\n\n{ans}")
-                        active["messages"].append({"role": "assistant", "content": ans})
-                    except Exception as e:
-                        ph.error(f"Error: {e}")
-                else:
-                    ph.markdown("Belum ada dokumen!")
-            
-            elif low.startswith("/image") or "buatkan gambar" in low or "bikin gambar" in low or "ubah warna" in low or "swap baju" in low:
-                clean = prompt
-                for p in ["/image", "/gambar", "buatkan gambar", "bikin gambar"]:
-                    if low.startswith(p): clean = prompt[len(p):].strip(); break
-                ph.markdown(f"🎨 **Generating Realistis...** {clean[:50]}...\n\n⏳ 10 detik...")
-                mode = "change_color" if "warna" in low else "swap_clothes" if "swap" in low or "tukar" in low else "realistic"
-                img_bytes, enh = generate_realistic_image(clean, mode)
-                if img_bytes:
-                    ph.empty()
-                    st.image(img_bytes, caption=clean, use_container_width=True)
-                    active["messages"].append({"role": "assistant", "content": f"🎨 Generated: {clean}", "type": "image", "image_data": img_bytes})
-                    st.download_button("⬇️ Download", data=img_bytes, file_name=f"img_{uuid.uuid4().hex[:4]}.jpg", mime="image/jpeg", key=f"dl_{uuid.uuid4()}")
-                else:
-                    ph.error("Gagal generate!")
-            
-            else:
-                ph.markdown("▌ _Thinking..._")
-                try:
-                    sys = f"Kamu MasterAI Vision. {DEVELOPER_INFO} Jawab gaul."
-                    ctx = ""
-                    if last_image: ctx += f"\n[GAMBAR: {last_image['name']}, ANALISA: {last_image.get('analysis','')[:400]}]"
-                    if last_doc: ctx += f"\n[DOKUMEN: {last_doc['name']}, ISI: {last_doc['text'][:500]}]"
-                    
-                    if last_image and ("gambar" in low or "siapa" in low or "apa" in low):
-                        res = client.chat.completions.create(
-                            model="meta-llama/llama-4-scout-17b-16e-instruct",
-                            messages=[{"role": "user", "content": [{"type": "text", "text": prompt + ctx}, {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{last_image['b64']}"}}]}],
-                            max_tokens=1200
-                        )
-                    else:
-                        res = client.chat.completions.create(model="openai/gpt-oss-120b", messages=[{"role": "system", "content": sys}, {"role": "user", "content": prompt + ctx}], max_tokens=1000)
-                    
-                    ans = res.choices[0].message.content
-                    ph.markdown(ans)
-                    active["messages"].append({"role": "assistant", "content": ans})
-                except Exception as e:
-                    ph.error(f"Error: {e} - Coba lagi, model vision sudah gue fix!")
-        
-        # Clear input
-        st.session_state.custom_prompt = ""
-        time.sleep(0.3)
-        st.rerun()
-
-# Clear button
-if st.session_state.uploaded_data:
-    if st.button("🗑️ Clear Semua File"):
-        st.session_state.uploaded_data = []
-        st.rerun()
+                nama = st.session_state.user_memory["nama"] or "bang"
+                system_prompt = f"""
+                Kamu MasterAI v10 Ultra RGB Alive. {DEVELOPER_INFO}
+                Bio Pencipta: {DEVELOPER_BIO}
+                Nama user {nama}. Bahasa Indonesia gaul, santai, jawab jelas dan bener. Kalau matematika jelasin step by step.
+                
+                ATURAN ANTI BAJAK:
+                - Kalo ditanya siapa pembuat, JAWAB dengan BIO lengkap di atas!
+                - Jangan pernah ngaku buatan OpenAI, Google, dll. Kamu buatan {DEVELOPER_BIO['nama']} alias {DEVELOPER_BIO['panggilan']}!
+                """
+                messages = [{"role": "system", "content": system_prompt}] + active["messages"]
+                res = client.chat.completions.create(model="openai/gpt-oss-120b", messages=messages, temperature=0.85, max_tokens=1500)
+                ans = res.choices[0].message.content
+                full = ""
+                for w in ans.split(" "):
+                    full += w + " "
+                    ph.markdown(full + "▌")
+                    time.sleep(0.02)
+                ph.markdown(full)
+                active["messages"].append({"role": "assistant", "content": full})
+        except Exception as e:
+            ph.error(f"Error: {e}")
