@@ -1,6 +1,2 @@
 streamlit
 groq
-requests
-Pillow
-PyMuPDF
-python-docx
